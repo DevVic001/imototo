@@ -1,34 +1,26 @@
 import { Link } from 'react-router-dom';
 import { useReveal } from '../hooks/useReveal';
-import { SERVICES, SITE, ASSETS } from '../config';
+import { SERVICES, SITE } from '../config';
 import { IMAGES } from '../config/images';
 import ServiceIcon from '../components/ServiceIcon';
-import LocalImage from '../components/LocalImage';
+import PageHero from '../components/PageHero';
 
 export default function Services() {
   const grid = useReveal();
 
   return (
     <>
-      <header className="page-hero page-hero--with-image">
-        {IMAGES.services.src ? (
-          <div className="page-hero__media" aria-hidden="true">
-            <LocalImage src={IMAGES.services.src} alt="" loading="eager" fill />
-            <div className="page-hero__scrim" />
-          </div>
-        ) : null}
-        <div className="container page-hero__inner">
-          <img src={ASSETS.logoDark} alt={SITE.name} className="page-hero__logo-single" />
-          <p className="section__eyebrow">Services</p>
-          <h1 className="section__title">
+      <PageHero
+        imageSrc={IMAGES.services.src}
+        breadcrumb="Services"
+        eyebrow="Services"
+        title={
+          <>
             What we <span>offer</span>
-          </h1>
-          <p className="section__lead">
-            Detailed cleaning solutions for homes, rentals, offices and commercial properties across{' '}
-            {SITE.areas}.
-          </p>
-        </div>
-      </header>
+          </>
+        }
+        lead={`Detailed cleaning solutions for homes, rentals, offices and commercial properties across ${SITE.areas}.`}
+      />
 
       <section className="section section--white">
         <div className={`container ${grid.className}`} ref={grid.ref}>

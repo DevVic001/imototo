@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SITE } from '../config';
+import { SITE, ASSETS } from '../config';
 import { HERO_SLIDES } from '../config/images';
 import LocalImage from './LocalImage';
 
@@ -16,6 +16,14 @@ export default function HeroCarousel() {
     return (
       <section id="home" className="hero-carousel hero-carousel--empty" aria-label="Introduction">
         <div className="container hero-carousel__content">
+          <img
+            src={ASSETS.logoLight}
+            alt={SITE.name}
+            className="hero-carousel__logo"
+            width={260}
+            height={68}
+            decoding="async"
+          />
           <p className="hero-carousel__eyebrow">Imototo · {SITE.areas}</p>
           <h1 className="hero-carousel__title">Professional cleaning you can trust</h1>
           <p className="hero-carousel__subtitle">
@@ -64,6 +72,14 @@ export default function HeroCarousel() {
       <div className="hero-carousel__content container">
         <div className="hero-carousel__copy">
           <div className="hero-carousel__copy-inner" key={slide.id}>
+            <img
+              src={ASSETS.logoLight}
+              alt={SITE.name}
+              className="hero-carousel__logo"
+              width={260}
+              height={68}
+              decoding="async"
+            />
             <p className="hero-carousel__eyebrow">Imototo · {SITE.areas}</p>
             <h1 className="hero-carousel__title">{slide.title}</h1>
             <p className="hero-carousel__subtitle">{slide.subtitle}</p>
@@ -83,13 +99,12 @@ export default function HeroCarousel() {
           </div>
         </div>
 
-        <div className="hero-carousel__panel" aria-hidden="true">
+        <div className="hero-carousel__panel">
           <div className="hero-carousel__panel-frame">
             <LocalImage
               key={`${slide.id}-preview`}
               src={slide.image}
               alt={slide.alt}
-              fill
               loading="eager"
               className="hero-carousel__preview-img"
             />

@@ -104,7 +104,7 @@ export default function Navbar() {
 
       <aside id="mobile-menu" className={`nav__drawer ${open ? 'nav__drawer--open' : ''}`} aria-hidden={!open}>
         <div className="nav__drawer-head">
-          <img src={ASSETS.logoDark} alt="" height={40} />
+          <img src={ASSETS.logoDark} alt="" height={46} />
           <button type="button" className="nav__drawer-close" aria-label="Close menu" onClick={() => setOpen(false)}>
             <CloseIcon />
           </button>

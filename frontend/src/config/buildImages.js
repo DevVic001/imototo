@@ -50,8 +50,12 @@ function isHeroExcluded(path) {
   return /cleaning328g67/i.test(path);
 }
 
+function isBrandLogo(path) {
+  return /logo[-_]?dark|logo[-_]?lightt?/i.test(path);
+}
+
 export function buildSiteImages(assets) {
-  const sorted = sortImages(assets.images || []);
+  const sorted = sortImages(assets.images || []).filter((p) => !isBrandLogo(p));
   const galleryPool = sorted.filter((p) => !isAboutOnlyImage(p));
   /** Homepage hero carousel — never use About or cleaning328g67 */
   const heroPool = galleryPool.filter((p) => !isHeroExcluded(p));

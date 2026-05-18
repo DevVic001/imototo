@@ -1,7 +1,7 @@
 import QuoteForm from '../components/QuoteForm';
 import ServiceIcon from '../components/ServiceIcon';
-import LocalImage from '../components/LocalImage';
-import { SITE, ASSETS } from '../config';
+import PageHero from '../components/PageHero';
+import { SITE } from '../config';
 import { IMAGES } from '../config/images';
 
 const CONTACT_ROWS = [
@@ -26,24 +26,17 @@ export default function Contact() {
 
   return (
     <>
-      <header className="page-hero page-hero--with-image">
-        {heroSrc ? (
-          <div className="page-hero__media" aria-hidden="true">
-            <LocalImage src={heroSrc} alt="" loading="eager" fill />
-            <div className="page-hero__scrim" />
-          </div>
-        ) : null}
-        <div className="container page-hero__inner">
-          <img src={ASSETS.logoDark} alt={SITE.name} className="page-hero__logo-single" />
-          <p className="section__eyebrow">Get a quote</p>
-          <h1 className="section__title">
+      <PageHero
+        imageSrc={heroSrc}
+        breadcrumb="Get a quote"
+        eyebrow="Get a quote"
+        title={
+          <>
             Request a <span>free quote</span>
-          </h1>
-          <p className="section__lead">
-            Tell us about your property — we respond quickly with clear pricing across {SITE.areas}.
-          </p>
-        </div>
-      </header>
+          </>
+        }
+        lead={`Tell us about your property — we respond quickly with clear pricing across ${SITE.areas}.`}
+      />
 
       <section className="section section--alt">
         <div className="container quote-layout">
