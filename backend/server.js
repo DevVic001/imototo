@@ -9,7 +9,23 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const allowedOrigins = [
+  'https://imototo.pages.dev',
+  'https://imototocleanings.co.uk',
+  'https://www.imototocleanings.co.uk',
+];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
+  })
+);
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/api/health', (_req, res) => {
