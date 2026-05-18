@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const https = require('https');
 const dotenv = require('dotenv');
 const emailService = require('./services/emailService.js');
 
@@ -79,4 +80,9 @@ app.post('/api/contact', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Imototo API listening on port ${PORT}`);
+
+  const keepAliveUrl = 'https://imototo.onrender.com';
+  setInterval(() => {
+    https.get(keepAliveUrl, (res) => res.resume()).on('error', () => {});
+  }, 5 * 60 * 1000);
 });
