@@ -2,9 +2,49 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { SITE } from '../config';
 
 const DISMISS_KEY = 'imototo-livechat-dismissed';
-const POS_KEY = 'imototo-livechat-pos';
+const POS_KEY = 'imototo-livechat-pos-v2';
 const DRAG_THRESHOLD = 6;
 const OFF_SCREEN_MARGIN = 40;
+const LONG_PRESS_MS = 750;
+
+function getViewportBox() {
+  const vv = window.visualViewport;
+  if (vv) {
+    return {
+      left: vv.offsetLeft,
+      top: vv.offsetTop,
+      width: vv.width,
+      height: vv.height,
+    };
+  }
+  return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+}
+
+function getSafePad() {
+  const v = getViewportBox();
+  const narrow = v.width <= 600;
+  const baseX = narrow ? 10 : 12;
+  const baseY = narrow ? 12 : 10;
+  return {
+    left: baseX,
+    right: baseX,
+    top: baseY + (narrow ? 8 : 0),
+    bottom: baseY + (narrow ? 28 : 12),
+  };
+}
+
+function clampPosition(x, y, w, h) {
+  const v = getViewportBox();
+  const pad = getSafePad();
+  const minX = v.left + pad.left;
+  const minY = v.top + pad.top;
+  const maxX = Math.max(minX, v.left + v.width - w - pad.right);
+  const maxY = Math.max(minY, v.top + v.height - h - pad.bottom);
+  return {
+    x: Math.min(Math.max(minX, x), maxX),
+    y: Math.min(Math.max(minY, y), maxY),
+  };
+}
 
 function ChatAvatar() {
   return (
@@ -34,23 +74,37 @@ function ChatAvatar() {
   );
 }
 
-function clampPosition(x, y, w, h) {
-  const pad = 8;
-  const maxX = Math.max(pad, window.innerWidth - w - pad);
-  const maxY = Math.max(pad, window.innerHeight - h - pad);
-  return {
-    x: Math.min(Math.max(pad, x), maxX),
-    y: Math.min(Math.max(pad, y), maxY),
-  };
+function isOffScreen(x, y, w, h) {
+  const v = getViewportBox();
+  const right = v.left + v.width;
+  const bottom = v.top + v.height;
+  return (
+    x + w < v.left - OFF_SCREEN_MARGIN ||
+    y + h < v.top - OFF_SCREEN_MARGIN ||
+    x > right + OFF_SCREEN_MARGIN ||
+    y > bottom + OFF_SCREEN_MARGIN
+  );
 }
 
-function isOffScreen(x, y, w, h) {
-  return (
-    x + w < -OFF_SCREEN_MARGIN ||
-    y + h < -OFF_SCREEN_MARGIN ||
-    x > window.innerWidth + OFF_SCREEN_MARGIN ||
-    y > window.innerHeight + OFF_SCREEN_MARGIN
-  );
+function isStaleViewportSave(parsed) {
+  if (typeof parsed.vw !== 'number' || typeof parsed.vh !== 'number') return false;
+  const v = getViewportBox();
+  const dw = Math.abs(parsed.vw - v.width) / Math.max(parsed.vw, 120);
+  const dh = Math.abs(parsed.vh - v.height) / Math.max(parsed.vh, 120);
+  return dw > 0.2 || dh > 0.2;
+}
+
+function clearScrollLockClass() {
+  document.documentElement.classList.remove('imototo-livechat-dragging');
+}
+
+function computeDefaultPosition(rect) {
+  const v = getViewportBox();
+  const pad = getSafePad();
+  const mobile = v.width <= 600;
+  const x = mobile ? v.left + pad.left : v.left + v.width - rect.width - pad.right;
+  const y = v.top + v.height - rect.height - pad.bottom;
+  return clampPosition(x, y, rect.width, rect.height);
 }
 
 export default function LiveChat() {
@@ -75,16 +129,39 @@ export default function LiveChat() {
 
   const defaultPosition = useCallback(() => {
     const rect = measure();
-    if (!rect) return { x: 16, y: 16 };
-    const pad = 16;
-    const mobile = window.innerWidth <= 600;
-    const x = mobile ? pad : window.innerWidth - rect.width - pad;
-    const y = window.innerHeight - rect.height - pad;
-    return clampPosition(x, y, rect.width, rect.height);
+    if (!rect) {
+      const v = getViewportBox();
+      return clampPosition(v.left + 16, v.top + 16, 56, 56);
+    }
+    return computeDefaultPosition(rect);
   }, [measure]);
 
+  const pressTimerRef = useRef(null);
+
+  const clearPressTimer = useCallback(() => {
+    if (pressTimerRef.current != null) {
+      window.clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
+    }
+  }, []);
+
   useLayoutEffect(() => {
-    if (hidden) return;
+    const hashReset =
+      typeof window !== 'undefined' && window.location.hash === '#reset-livechat';
+
+    if (hashReset) {
+      try {
+        localStorage.removeItem(POS_KEY);
+        localStorage.removeItem(DISMISS_KEY);
+      } catch {
+        /* ignore */
+      }
+      const { pathname, search } = window.location;
+      window.history.replaceState(null, '', `${pathname}${search}`);
+      setHidden(false);
+    }
+
+    if (hidden && !hashReset) return;
 
     const rect = measure();
     if (!rect) return;
@@ -94,7 +171,16 @@ export default function LiveChat() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
-          setPos(clampPosition(parsed.x, parsed.y, rect.width, rect.height));
+          if (isStaleViewportSave(parsed)) {
+            try {
+              localStorage.removeItem(POS_KEY);
+            } catch {
+              /* ignore */
+            }
+            setPos(computeDefaultPosition(rect));
+          } else {
+            setPos(clampPosition(parsed.x, parsed.y, rect.width, rect.height));
+          }
           setReady(true);
           return;
         }
@@ -117,8 +203,33 @@ export default function LiveChat() {
     };
 
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    const vv = window.visualViewport;
+    if (vv) {
+      vv.addEventListener('resize', onResize);
+      vv.addEventListener('scroll', onResize);
+    }
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (vv) {
+        vv.removeEventListener('resize', onResize);
+        vv.removeEventListener('scroll', onResize);
+      }
+    };
   }, [hidden, pos, measure]);
+
+  useEffect(() => {
+    const onPageShow = (e) => {
+      if (e.persisted) {
+        clearScrollLockClass();
+        dragRef.current = null;
+        setDragging(false);
+      }
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, []);
+
+  useEffect(() => () => clearPressTimer(), [clearPressTimer]);
 
   useEffect(() => {
     if (!dragging) return undefined;
@@ -131,7 +242,10 @@ export default function LiveChat() {
 
       const dx = e.clientX - drag.startX;
       const dy = e.clientY - drag.startY;
-      if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) drag.moved = true;
+      if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) {
+        if (!drag.moved) clearPressTimer();
+        drag.moved = true;
+      }
 
       setPos({
         x: e.clientX - drag.offsetX,
@@ -140,6 +254,8 @@ export default function LiveChat() {
     };
 
     const onEnd = (e) => {
+      clearPressTimer();
+
       const drag = dragRef.current;
       if (!drag || e.pointerId !== drag.pointerId) return;
 
@@ -167,7 +283,8 @@ export default function LiveChat() {
       const next = clampPosition(x, y, drag.width, drag.height);
       setPos(next);
       try {
-        localStorage.setItem(POS_KEY, JSON.stringify(next));
+        const v = getViewportBox();
+        localStorage.setItem(POS_KEY, JSON.stringify({ ...next, vw: v.width, vh: v.height }));
       } catch {
         /* ignore */
       }
@@ -177,24 +294,21 @@ export default function LiveChat() {
     window.addEventListener('pointerup', onEnd);
     window.addEventListener('pointercancel', onEnd);
 
-    const prevTouchAction = document.body.style.touchAction;
-    document.body.style.touchAction = 'none';
+    document.documentElement.classList.add('imototo-livechat-dragging');
 
     return () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onEnd);
       window.removeEventListener('pointercancel', onEnd);
-      document.body.style.touchAction = prevTouchAction;
+      clearScrollLockClass();
     };
-  }, [dragging]);
+  }, [dragging, clearPressTimer]);
 
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
 
     const rect = measure();
     if (!rect || !pos) return;
-
-    e.preventDefault();
 
     dragRef.current = {
       pointerId: e.pointerId,
@@ -207,6 +321,25 @@ export default function LiveChat() {
       moved: false,
     };
     setDragging(true);
+
+    clearPressTimer();
+    pressTimerRef.current = window.setTimeout(() => {
+      pressTimerRef.current = null;
+      const drag = dragRef.current;
+      if (!drag || drag.moved) return;
+      dragRef.current = null;
+      setDragging(false);
+      clearScrollLockClass();
+      try {
+        localStorage.removeItem(POS_KEY);
+      } catch {
+        /* ignore */
+      }
+      const r = rootRef.current?.getBoundingClientRect();
+      if (r) setPos(computeDefaultPosition(r));
+      else setPos(defaultPosition());
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(12);
+    }, LONG_PRESS_MS);
   };
 
   if (hidden) return null;
@@ -221,9 +354,10 @@ export default function LiveChat() {
         className="live-chat__btn"
         role="button"
         tabIndex={0}
-        aria-label={`We're listening — email ${SITE.email}. Drag to move; drag off screen to hide.`}
-        title={`${SITE.email} — drag to move, drag off screen to hide`}
+        aria-label={`We're listening — email ${SITE.email}. Drag to move; drag off screen to hide. Hold one second on the button to reset its position.`}
+        title={`${SITE.email} — drag to move; hold 1s to reset spot; drag off screen to hide`}
         onPointerDown={onPointerDown}
+        onContextMenu={(ev) => ev.preventDefault()}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();

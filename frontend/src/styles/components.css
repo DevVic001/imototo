@@ -521,6 +521,13 @@
   color: var(--color-text-muted);
 }
 
+/* Prevent page scroll stealing drags on iOS; toggled from JS while dragging */
+html.imototo-livechat-dragging,
+html.imototo-livechat-dragging body {
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
 /* ——— Live chat (draggable) ——— */
 .live-chat {
   position: fixed;
