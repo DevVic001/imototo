@@ -40,7 +40,7 @@ export default function FlyerShowcase() {
           Services &amp; <span>areas we cover</span>
         </h2>
         <p className="section__lead section__lead--center">
-          From our client flyers — homes, rentals, offices and deep cleaning across Manchester and Bolton.
+          Imototo marketing flyers — the services we offer across Manchester, Bolton and surrounding areas.
         </p>
         <div className="flyer-showcase__grid">
           {FLYERS.map((flyer) => (

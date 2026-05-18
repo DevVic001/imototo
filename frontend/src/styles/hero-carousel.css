@@ -2,13 +2,14 @@
 
 .hero-carousel {
   position: relative;
-  min-height: min(620px, calc(100svh - var(--header-h)));
+  --hero-nav-gap: clamp(2.75rem, 7vh, 4rem);
+  min-height: min(660px, calc(100svh - var(--header-h)));
   margin-top: calc(-1 * var(--header-h));
-  padding-top: calc(var(--header-h) + clamp(2rem, 6vh, 3.5rem));
+  padding-top: calc(var(--header-h) + var(--hero-nav-gap));
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: 28px;
+  padding-bottom: clamp(28px, 4vh, 40px);
   overflow: hidden;
   color: #fff;
 }
@@ -122,9 +123,9 @@
   position: relative;
   z-index: 2;
   display: grid;
-  gap: 28px;
+  gap: clamp(24px, 3vh, 32px);
   align-items: center;
-  padding-top: clamp(1.25rem, 4vh, 2.5rem);
+  padding-top: clamp(1.5rem, 3.5vh, 2.25rem);
 }
 
 @media (min-width: 960px) {
@@ -300,6 +301,17 @@
 
 .hero-carousel__arrow:hover {
   background: rgba(1, 26, 33, 0.7);
+}
+
+@media (max-width: 768px) {
+  .hero-carousel {
+    --hero-nav-gap: clamp(3.25rem, 9vh, 4.75rem);
+    min-height: min(700px, calc(100svh - var(--header-h)));
+  }
+
+  .hero-carousel__content {
+    padding-top: clamp(1.75rem, 4vh, 2.5rem);
+  }
 }
 
 @media (max-width: 599px) {
