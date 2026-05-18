@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 72" role="img" aria-label="Imototo Cleaning Services">
+  <g fill="#02333f">
+    <circle cx="14" cy="18" r="5"/>
+    <path d="M28 8c7-5 16-1 18 7-5 2-11-1-18-7z" opacity=".9"/>
+    <path d="M44 10c6-4 14-1 16 6-4 2-9 0-16-6z" opacity=".75"/>
+    <circle cx="52" cy="20" r="4" opacity=".6"/>
+  </g>
+  <text x="68" y="44" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="36" font-weight="800" fill="#02333f" letter-spacing="-0.5">imototo</text>
+  <text x="70" y="62" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="9.5" font-weight="700" fill="#02333f" letter-spacing="0.22em" opacity=".85">CLEANING SERVICES</text>
+</svg>

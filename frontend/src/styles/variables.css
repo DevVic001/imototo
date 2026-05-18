@@ -1,0 +1,51 @@
+:root {
+  /* Brand */
+  --color-primary: #02333f;
+  --color-primary-dark: #011a21;
+  --color-primary-muted: #3d5a63;
+  --color-primary-soft: rgba(2, 51, 63, 0.06);
+  --color-primary-border: rgba(2, 51, 63, 0.14);
+
+  --color-secondary: #d0d5cd;
+  --color-secondary-soft: #eef0ec;
+  --color-secondary-deep: #b8bfb5;
+
+  --color-accent-peach: #f3e0d4;
+  --color-accent-peach-border: #e8c4ae;
+  --color-accent-blue: #e3edf2;
+  --color-accent-blue-border: #b8d4e0;
+
+  --color-white: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f8f6;
+  --color-surface-warm: #faf9f7;
+
+  /* Text — body is softer; primary only for emphasis */
+  --color-text: #3a4f56;
+  --color-text-muted: #5c7179;
+  --color-heading: #02333f;
+
+  --color-border: rgba(2, 51, 63, 0.1);
+  --color-border-strong: rgba(2, 51, 63, 0.18);
+
+  --color-success: #1a7a4a;
+  --color-error: #b42318;
+
+  --font-body: 'Source Sans 3', system-ui, sans-serif;
+  --font-display: 'Outfit', system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-pill: 6px;
+
+  --shadow-sm: 0 2px 16px rgba(2, 51, 63, 0.06);
+  --shadow-md: 0 8px 32px rgba(2, 51, 63, 0.08);
+  --shadow-lg: 0 20px 48px rgba(2, 51, 63, 0.1);
+
+  --container-max: 1200px;
+  --gutter: clamp(1.25rem, 4.5vw, 2.5rem);
+  --header-h: 76px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

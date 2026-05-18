@@ -1,0 +1,23 @@
+{
+  "name": "imototo-cleaning",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "icons": "node scripts/generate-pwa-icons.mjs",
+    "dev": "vite",
+    "build": "npm run icons && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.34.2",
+    "vite": "^5.4.19",
+    "vite-plugin-pwa": "^0.21.2"
+  }
+}
