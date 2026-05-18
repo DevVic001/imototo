@@ -71,49 +71,32 @@ export default function InstallPrompt() {
   if (!visible && !iosHint) return null;
 
   return (
-    <aside
-      className="pwa-install"
-      role="dialog"
-      aria-labelledby="pwa-install-title"
-      aria-describedby="pwa-install-desc"
-    >
+    <aside className="pwa-install" role="dialog" aria-labelledby="pwa-install-title">
       <div className="pwa-install__card">
         <img
           className="pwa-install__icon"
           src="/pwa/icon-192.png"
           alt=""
-          width={56}
-          height={56}
+          width={32}
+          height={32}
           onError={(e) => {
             e.currentTarget.src = '/pwa/icon.svg';
           }}
         />
-        <div className="pwa-install__body">
-          <p id="pwa-install-title" className="pwa-install__title">
-            Install Imototo app
-          </p>
-          <p id="pwa-install-desc" className="pwa-install__text">
-            {iosHint
-              ? 'Tap Share, then “Add to Home Screen” for quick quotes and contact.'
-              : 'Add to your home screen for fast access — works like an app, no app store needed.'}
-          </p>
-        </div>
+        <p id="pwa-install-title" className="pwa-install__title">
+          {iosHint ? 'Add to home screen' : 'Install app'}
+        </p>
         <div className="pwa-install__actions">
           {!iosHint && (
-            <button type="button" className="btn btn--primary btn--sm" onClick={install}>
+            <button type="button" className="pwa-install__btn pwa-install__btn--primary" onClick={install}>
               Install
             </button>
           )}
-          <button type="button" className="btn btn--outline btn--sm" onClick={dismiss}>
-            {iosHint ? 'Got it' : 'Not now'}
+          <button type="button" className="pwa-install__btn pwa-install__btn--ghost" onClick={dismiss}>
+            {iosHint ? 'OK' : 'Later'}
           </button>
         </div>
-        <button
-          type="button"
-          className="pwa-install__close"
-          aria-label="Dismiss"
-          onClick={dismiss}
-        >
+        <button type="button" className="pwa-install__close" aria-label="Dismiss" onClick={dismiss}>
           ×
         </button>
       </div>
