@@ -13,7 +13,7 @@ export default function Services() {
       <header className="page-hero page-hero--with-image">
         {IMAGES.services.src ? (
           <div className="page-hero__media" aria-hidden="true">
-            <LocalImage src={IMAGES.services.src} alt="" loading="eager" />
+            <LocalImage src={IMAGES.services.src} alt="" loading="eager" fill />
             <div className="page-hero__scrim" />
           </div>
         ) : null}

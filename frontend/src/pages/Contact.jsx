@@ -29,7 +29,7 @@ export default function Contact() {
       <header className="page-hero page-hero--with-image">
         {heroSrc ? (
           <div className="page-hero__media" aria-hidden="true">
-            <LocalImage src={heroSrc} alt="" loading="eager" />
+            <LocalImage src={heroSrc} alt="" loading="eager" fill />
             <div className="page-hero__scrim" />
           </div>
         ) : null}

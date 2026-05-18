@@ -5,6 +5,7 @@ import App from './App';
 import './styles/variables.css';
 import './styles/global.css';
 import './styles/components.css';
+import './styles/media-loader.css';
 import './styles/pages.css';
 import './styles/premium.css';
 import './styles/hero-carousel.css';

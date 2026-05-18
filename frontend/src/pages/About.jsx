@@ -25,7 +25,7 @@ export default function About() {
       <header className="page-hero page-hero--with-image">
         {IMAGES.intro.src ? (
           <div className="page-hero__media" aria-hidden="true">
-            <LocalImage src={IMAGES.intro.src} alt="" loading="eager" />
+            <LocalImage src={IMAGES.intro.src} alt="" loading="eager" fill />
             <div className="page-hero__scrim" />
           </div>
         ) : null}

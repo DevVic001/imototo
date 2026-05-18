@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SITE } from '../config';
 import { HERO_SLIDES } from '../config/images';
+import LocalImage from './LocalImage';
 
 const AUTOPLAY_MS = 8000;
 
@@ -36,16 +37,14 @@ export default function HeroCarousel() {
   return (
     <section id="home" className="hero-carousel" aria-roledescription="carousel">
       <div className="hero-carousel__bg" aria-hidden="true">
-        <img
+        <LocalImage
           key={slide.id}
           className="hero-carousel__bg-slide is-active"
           src={slide.image}
           alt=""
-          width={1600}
-          height={900}
+          fill
           loading="eager"
           fetchPriority="high"
-          decoding="async"
           draggable={false}
         />
         <div className="hero-carousel__scrim" />
@@ -86,14 +85,12 @@ export default function HeroCarousel() {
 
         <div className="hero-carousel__panel" aria-hidden="true">
           <div className="hero-carousel__panel-frame">
-            <img
+            <LocalImage
               key={`${slide.id}-preview`}
               src={slide.image}
               alt={slide.alt}
-              width={560}
-              height={360}
+              fill
               loading="eager"
-              decoding="async"
               className="hero-carousel__preview-img"
             />
             <div className="hero-carousel__panel-shine" />

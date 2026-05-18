@@ -1,0 +1,141 @@
+/* Image loading — Imototo spinner until loaded */
+
+.media-loader {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: linear-gradient(145deg, var(--color-secondary-soft) 0%, #e4e9e5 100%);
+}
+
+.media-loader--fill {
+  position: absolute;
+  inset: 0;
+}
+
+.media-loader__placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+.media-loader--loaded .media-loader__placeholder {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.media-loader__ring {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(2, 51, 63, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: media-loader-spin 0.7s linear infinite;
+}
+
+.media-loader__mark {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.media-loader__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.media-loader--loaded .media-loader__img {
+  opacity: 1;
+}
+
+.media-loader--fill .media-loader__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes media-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-loader__ring {
+    animation: none;
+    border-top-color: rgba(2, 51, 63, 0.25);
+  }
+}
+
+/* ——— In context ——— */
+.page-hero__media .media-loader {
+  position: absolute;
+  inset: 0;
+}
+
+.page-hero__media .media-loader__img {
+  filter: brightness(0.5);
+}
+
+.intro-split__media .media-loader {
+  width: 100%;
+  height: 100%;
+}
+
+.intro-split__media .media-loader__img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-split__media .media-loader {
+  width: 100%;
+  min-height: 280px;
+}
+
+.about-split__media .media-loader__img {
+  min-height: 280px;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-gallery__item .media-loader__img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.flyer-card .media-loader {
+  width: 100%;
+}
+
+.flyer-card .media-loader__img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-carousel__bg .media-loader {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-carousel__panel-frame .media-loader {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.hero-carousel__panel-frame .media-loader__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
