@@ -527,21 +527,16 @@
   color: var(--color-text-muted);
 }
 
-/* Prevent page scroll stealing drags on iOS; toggled from JS while dragging */
-html.imototo-livechat-dragging,
-html.imototo-livechat-dragging body {
-  touch-action: none;
-  overscroll-behavior: none;
-}
-
 /* ——— Live chat (draggable) ——— */
 /* Above fixed nav (1000–1002) & PWA install (1100); below form toasts (1200) */
 .live-chat {
   position: fixed;
+  left: 0;
+  top: 0;
   z-index: 1150;
   opacity: 0;
   pointer-events: none;
-  touch-action: none;
+  touch-action: manipulation;
 }
 
 .live-chat--ready {
@@ -552,7 +547,11 @@ html.imototo-livechat-dragging body {
 
 .live-chat--dragging {
   z-index: 1180;
-  will-change: left, top;
+  will-change: transform;
+}
+
+.live-chat--dragging .live-chat__btn {
+  touch-action: none;
 }
 
 .contact-info-row {

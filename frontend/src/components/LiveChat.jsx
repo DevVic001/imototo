@@ -2,9 +2,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { SITE } from '../config';
 
 const DISMISS_KEY = 'imototo-livechat-dismissed';
-const POS_KEY = 'imototo-livechat-pos-v2';
-const DRAG_THRESHOLD = 6;
-const OFF_SCREEN_MARGIN = 40;
+const POS_KEY = 'imototo-livechat-pos-v3';
+const DRAG_THRESHOLD = 8;
+const OFF_SCREEN_MARGIN = 56;
 const LONG_PRESS_MS = 750;
 
 function getViewportBox() {
@@ -23,14 +23,24 @@ function getViewportBox() {
 function getSafePad() {
   const v = getViewportBox();
   const narrow = v.width <= 600;
-  const baseX = narrow ? 8 : 12;
-  const baseY = narrow ? 8 : 10;
+  const baseX = narrow ? 12 : 16;
+  const baseY = narrow ? 10 : 12;
   return {
     left: baseX,
     right: baseX,
-    top: baseY + (narrow ? 4 : 0),
-    bottom: baseY + (narrow ? 14 : 12),
+    top: baseY,
+    bottom: baseY,
   };
+}
+
+/** Space above bottom edge — safe area + mobile sticky quote/WhatsApp bar */
+function getBottomInset() {
+  const pad = getSafePad();
+  let inset = pad.bottom;
+  if (typeof window !== 'undefined' && window.innerWidth <= 767) {
+    inset += 76;
+  }
+  return inset;
 }
 
 function clampPosition(x, y, w, h) {
@@ -39,7 +49,6 @@ function clampPosition(x, y, w, h) {
   const iw = window.innerWidth;
   const ih = window.innerHeight;
 
-  /* Use the looser of visual viewport vs layout viewport so Safari chrome does not “trap” the bubble */
   const minX = Math.min(v.left + pad.left, pad.left);
   const maxX = Math.max(v.left + v.width - w - pad.right, iw - w - pad.right);
   const minY = Math.min(v.top + pad.top, pad.top);
@@ -104,39 +113,37 @@ function isStaleViewportSave(parsed) {
   return dw > 0.2 || dh > 0.2;
 }
 
-function clearScrollLockClass() {
-  document.documentElement.classList.remove('imototo-livechat-dragging');
+/** Drop saves pinned to the top half — default is always bottom-corner */
+function isTopPinnedSave(parsed, widgetHeight) {
+  const v = getViewportBox();
+  const limit = v.top + v.height * 0.45;
+  return typeof parsed.y === 'number' && parsed.y + widgetHeight * 0.5 < limit;
 }
 
-function releasePointerCaptureSafe() {
-  const el = captureRef.current;
-  const pid = capturePointerIdRef.current;
-  captureRef.current = null;
-  capturePointerIdRef.current = null;
-  if (!el || pid == null) return;
-  try {
-    if (typeof el.hasPointerCapture === 'function' && el.hasPointerCapture(pid)) {
-      el.releasePointerCapture(pid);
-    }
-  } catch {
-    /* ignore */
-  }
+function estimateWidgetSize(rect) {
+  const v = getViewportBox();
+  const mobile = v.width <= 600;
+  const w = rect?.width > 0 ? rect.width : mobile ? 56 : 220;
+  const h = rect?.height > 0 ? rect.height : mobile ? 92 : 52;
+  return { w, h };
 }
 
 function computeDefaultPosition(rect) {
   const v = getViewportBox();
   const pad = getSafePad();
+  const { w, h } = estimateWidgetSize(rect);
   const mobile = v.width <= 600;
-  const x = mobile ? v.left + pad.left : v.left + v.width - rect.width - pad.right;
-  const y = v.top + v.height - rect.height - pad.bottom;
-  return clampPosition(x, y, rect.width, rect.height);
+  const x = mobile ? pad.left : window.innerWidth - w - pad.right;
+  const y = window.innerHeight - h - getBottomInset();
+  return clampPosition(x, y, w, h);
 }
 
 export default function LiveChat() {
   const rootRef = useRef(null);
   const dragRef = useRef(null);
-  const captureRef = useRef(null);
-  const capturePointerIdRef = useRef(null);
+  const draggingActiveRef = useRef(false);
+  const rafRef = useRef(null);
+  const pendingPosRef = useRef(null);
   const [hidden, setHidden] = useState(() => {
     try {
       return localStorage.getItem(DISMISS_KEY) === '1';
@@ -156,10 +163,6 @@ export default function LiveChat() {
 
   const defaultPosition = useCallback(() => {
     const rect = measure();
-    if (!rect) {
-      const v = getViewportBox();
-      return clampPosition(v.left + 16, v.top + 16, 56, 56);
-    }
     return computeDefaultPosition(rect);
   }, [measure]);
 
@@ -171,6 +174,24 @@ export default function LiveChat() {
       pressTimerRef.current = null;
     }
   }, []);
+
+  const flushPosition = useCallback(() => {
+    rafRef.current = null;
+    if (pendingPosRef.current) {
+      setPos(pendingPosRef.current);
+      pendingPosRef.current = null;
+    }
+  }, []);
+
+  const schedulePosition = useCallback(
+    (next) => {
+      pendingPosRef.current = next;
+      if (rafRef.current == null) {
+        rafRef.current = window.requestAnimationFrame(flushPosition);
+      }
+    },
+    [flushPosition]
+  );
 
   useLayoutEffect(() => {
     const hashReset =
@@ -190,40 +211,48 @@ export default function LiveChat() {
 
     if (hidden && !hashReset) return;
 
-    const rect = measure();
-    if (!rect) return;
+    const applyPosition = () => {
+      const rect = measure();
+      const { w, h } = estimateWidgetSize(rect);
 
-    try {
-      const saved = localStorage.getItem(POS_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
-          if (isStaleViewportSave(parsed)) {
-            try {
-              localStorage.removeItem(POS_KEY);
-            } catch {
-              /* ignore */
+      try {
+        const saved = localStorage.getItem(POS_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
+            if (isStaleViewportSave(parsed) || isTopPinnedSave(parsed, h)) {
+              try {
+                localStorage.removeItem(POS_KEY);
+              } catch {
+                /* ignore */
+              }
+              setPos(computeDefaultPosition(rect));
+            } else {
+              setPos(clampPosition(parsed.x, parsed.y, w, h));
             }
-            setPos(computeDefaultPosition(rect));
-          } else {
-            setPos(clampPosition(parsed.x, parsed.y, rect.width, rect.height));
+            setReady(true);
+            return true;
           }
-          setReady(true);
-          return;
         }
+      } catch {
+        /* ignore */
       }
-    } catch {
-      /* ignore */
-    }
 
-    setPos(defaultPosition());
-    setReady(true);
-  }, [hidden, defaultPosition, measure]);
+      setPos(computeDefaultPosition(rect));
+      setReady(true);
+      return true;
+    };
+
+    if (!applyPosition()) {
+      requestAnimationFrame(applyPosition);
+    }
+  }, [hidden, measure]);
 
   useEffect(() => {
     if (hidden || !pos) return undefined;
 
     const onResize = () => {
+      if (draggingActiveRef.current) return;
       const rect = measure();
       if (!rect) return;
       setPos((current) => clampPosition(current.x, current.y, rect.width, rect.height));
@@ -233,13 +262,11 @@ export default function LiveChat() {
     const vv = window.visualViewport;
     if (vv) {
       vv.addEventListener('resize', onResize);
-      vv.addEventListener('scroll', onResize);
     }
     return () => {
       window.removeEventListener('resize', onResize);
       if (vv) {
         vv.removeEventListener('resize', onResize);
-        vv.removeEventListener('scroll', onResize);
       }
     };
   }, [hidden, pos, measure]);
@@ -247,8 +274,7 @@ export default function LiveChat() {
   useEffect(() => {
     const onPageShow = (e) => {
       if (e.persisted) {
-        clearScrollLockClass();
-        releasePointerCaptureSafe();
+        draggingActiveRef.current = false;
         dragRef.current = null;
         setDragging(false);
       }
@@ -257,7 +283,19 @@ export default function LiveChat() {
     return () => window.removeEventListener('pageshow', onPageShow);
   }, []);
 
-  useEffect(() => () => clearPressTimer(), [clearPressTimer]);
+  useEffect(
+    () => () => {
+      clearPressTimer();
+      if (rafRef.current != null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
+    },
+    [clearPressTimer]
+  );
+
+  useEffect(() => {
+    draggingActiveRef.current = dragging;
+  }, [dragging]);
 
   useEffect(() => {
     if (!dragging) return undefined;
@@ -266,8 +304,6 @@ export default function LiveChat() {
       const drag = dragRef.current;
       if (!drag || e.pointerId !== drag.pointerId) return;
 
-      if (e.cancelable) e.preventDefault();
-
       const dx = e.clientX - drag.startX;
       const dy = e.clientY - drag.startY;
       if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) {
@@ -275,7 +311,9 @@ export default function LiveChat() {
         drag.moved = true;
       }
 
-      setPos({
+      if (!drag.moved) return;
+
+      schedulePosition({
         x: e.clientX - drag.offsetX,
         y: e.clientY - drag.offsetY,
       });
@@ -288,16 +326,24 @@ export default function LiveChat() {
       if (!drag || e.pointerId !== drag.pointerId) return;
 
       dragRef.current = null;
+      draggingActiveRef.current = false;
       setDragging(false);
-      releasePointerCaptureSafe();
+
+      if (rafRef.current != null) {
+        window.cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+
+      const pending = pendingPosRef.current;
+      pendingPosRef.current = null;
 
       if (!drag.moved) {
         window.location.href = SITE.mailto;
         return;
       }
 
-      const x = e.clientX - drag.offsetX;
-      const y = e.clientY - drag.offsetY;
+      const x = pending ? pending.x : e.clientX - drag.offsetX;
+      const y = pending ? pending.y : e.clientY - drag.offsetY;
 
       if (isOffScreen(x, y, drag.width, drag.height)) {
         try {
@@ -319,20 +365,16 @@ export default function LiveChat() {
       }
     };
 
-    window.addEventListener('pointermove', onMove, { passive: false });
+    window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onEnd);
     window.addEventListener('pointercancel', onEnd);
-
-    document.documentElement.classList.add('imototo-livechat-dragging');
 
     return () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onEnd);
       window.removeEventListener('pointercancel', onEnd);
-      clearScrollLockClass();
-      releasePointerCaptureSafe();
     };
-  }, [dragging, clearPressTimer]);
+  }, [dragging, clearPressTimer, schedulePosition]);
 
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
@@ -350,13 +392,7 @@ export default function LiveChat() {
       height: rect.height,
       moved: false,
     };
-    captureRef.current = e.currentTarget;
-    capturePointerIdRef.current = e.pointerId;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      /* ignore — still works with window listeners on many browsers */
-    }
+    draggingActiveRef.current = true;
     setDragging(true);
 
     clearPressTimer();
@@ -365,9 +401,8 @@ export default function LiveChat() {
       const drag = dragRef.current;
       if (!drag || drag.moved) return;
       dragRef.current = null;
+      draggingActiveRef.current = false;
       setDragging(false);
-      clearScrollLockClass();
-      releasePointerCaptureSafe();
       try {
         localStorage.removeItem(POS_KEY);
       } catch {
@@ -382,20 +417,22 @@ export default function LiveChat() {
 
   if (hidden) return null;
 
+  const transform =
+    ready && pos ? `translate3d(${Math.round(pos.x)}px, ${Math.round(pos.y)}px, 0)` : undefined;
+
   return (
     <div
       ref={rootRef}
       className={`live-chat ${ready ? 'live-chat--ready' : ''} ${dragging ? 'live-chat--dragging' : ''}`}
-      style={ready && pos ? { left: `${pos.x}px`, top: `${pos.y}px` } : undefined}
+      style={transform ? { transform } : undefined}
     >
       <div
         className="live-chat__btn"
         role="button"
         tabIndex={0}
-        aria-label={`We're listening — email ${SITE.email}. Drag to move; drag off screen to hide. Hold one second on the button to reset its position.`}
+        aria-label={`We're listening — email ${SITE.email}. Drag to move; drag off screen to hide. Hold one second to reset its position.`}
         title={`${SITE.email} — drag to move; hold 1s to reset spot; drag off screen to hide`}
         onPointerDown={onPointerDown}
-        onContextMenu={(ev) => ev.preventDefault()}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
