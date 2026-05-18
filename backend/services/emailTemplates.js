@@ -10,7 +10,10 @@ const BRAND = {
   white: '#ffffff',
   site: 'https://imototocleanings.co.uk',
   name: 'Imototo Cleaning Services',
+  /** White logo on teal — public/assets/images/logo-dark.jpg */
   logoUrl: 'https://imototocleanings.co.uk/assets/images/logo-dark.jpg',
+  /** Dark logo on light — public/assets/images/logo-lightt.jpg */
+  logoOnLightUrl: 'https://imototocleanings.co.uk/assets/images/logo-lightt.jpg',
   phone: '+44 7823 893420',
   phoneE164: '+447823893420',
   whatsappUrl: 'https://wa.me/447823893420',
@@ -98,10 +101,9 @@ function layout({ preheader, badge, title, subtitle, bodyHtml, footerNote }) {
               <a href="${BRAND.site}" style="text-decoration:none;">
                 <img
                   src="${BRAND.logoUrl}"
-                  width="300"
-                  height="80"
-                  alt=""
-                  style="display:block;width:100%;max-width:300px;height:auto;margin:0 auto;border:0;"
+                  width="320"
+                  alt="${escapeHtml(BRAND.name)}"
+                  style="display:block;width:100%;max-width:320px;height:auto;margin:0 auto;border:0;border-radius:8px;"
                 />
               </a>
             </td>

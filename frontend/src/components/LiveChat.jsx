@@ -2,7 +2,8 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { SITE } from '../config';
 
 const DISMISS_KEY = 'imototo-livechat-dismissed';
-const POS_KEY = 'imototo-livechat-pos-v3';
+const POS_KEY = 'imototo-livechat-pos-v4';
+const POS_ANCHOR = 'br';
 const DRAG_THRESHOLD = 8;
 const OFF_SCREEN_MARGIN = 56;
 const LONG_PRESS_MS = 750;
@@ -113,11 +114,26 @@ function isStaleViewportSave(parsed) {
   return dw > 0.2 || dh > 0.2;
 }
 
-/** Drop saves pinned to the top half — default is always bottom-corner */
+/** Drop saves pinned to the top half — default is bottom-right */
 function isTopPinnedSave(parsed, widgetHeight) {
   const v = getViewportBox();
   const limit = v.top + v.height * 0.45;
   return typeof parsed.y === 'number' && parsed.y + widgetHeight * 0.5 < limit;
+}
+
+/** Drop old saves on the left — default corner is bottom-right */
+function isLeftPinnedSave(parsed, widgetWidth) {
+  const v = getViewportBox();
+  const centerX = parsed.x + widgetWidth / 2;
+  return centerX < v.left + v.width * 0.42;
+}
+
+function shouldUseSavedPosition(parsed, w, h) {
+  if (parsed.anchor !== POS_ANCHOR) return false;
+  if (isStaleViewportSave(parsed)) return false;
+  if (isTopPinnedSave(parsed, h)) return false;
+  if (isLeftPinnedSave(parsed, w)) return false;
+  return true;
 }
 
 function estimateWidgetSize(rect) {
@@ -129,11 +145,9 @@ function estimateWidgetSize(rect) {
 }
 
 function computeDefaultPosition(rect) {
-  const v = getViewportBox();
   const pad = getSafePad();
   const { w, h } = estimateWidgetSize(rect);
-  const mobile = v.width <= 600;
-  const x = mobile ? pad.left : window.innerWidth - w - pad.right;
+  const x = window.innerWidth - w - pad.right;
   const y = window.innerHeight - h - getBottomInset();
   return clampPosition(x, y, w, h);
 }
@@ -220,7 +234,7 @@ export default function LiveChat() {
         if (saved) {
           const parsed = JSON.parse(saved);
           if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
-            if (isStaleViewportSave(parsed) || isTopPinnedSave(parsed, h)) {
+            if (!shouldUseSavedPosition(parsed, w, h)) {
               try {
                 localStorage.removeItem(POS_KEY);
               } catch {
@@ -359,7 +373,10 @@ export default function LiveChat() {
       setPos(next);
       try {
         const v = getViewportBox();
-        localStorage.setItem(POS_KEY, JSON.stringify({ ...next, vw: v.width, vh: v.height }));
+        localStorage.setItem(
+          POS_KEY,
+          JSON.stringify({ ...next, vw: v.width, vh: v.height, anchor: POS_ANCHOR })
+        );
       } catch {
         /* ignore */
       }
