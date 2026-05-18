@@ -23,26 +23,36 @@ function getViewportBox() {
 function getSafePad() {
   const v = getViewportBox();
   const narrow = v.width <= 600;
-  const baseX = narrow ? 10 : 12;
-  const baseY = narrow ? 12 : 10;
+  const baseX = narrow ? 8 : 12;
+  const baseY = narrow ? 8 : 10;
   return {
     left: baseX,
     right: baseX,
-    top: baseY + (narrow ? 8 : 0),
-    bottom: baseY + (narrow ? 28 : 12),
+    top: baseY + (narrow ? 4 : 0),
+    bottom: baseY + (narrow ? 14 : 12),
   };
 }
 
 function clampPosition(x, y, w, h) {
   const v = getViewportBox();
   const pad = getSafePad();
-  const minX = v.left + pad.left;
-  const minY = v.top + pad.top;
-  const maxX = Math.max(minX, v.left + v.width - w - pad.right);
-  const maxY = Math.max(minY, v.top + v.height - h - pad.bottom);
+  const iw = window.innerWidth;
+  const ih = window.innerHeight;
+
+  /* Use the looser of visual viewport vs layout viewport so Safari chrome does not “trap” the bubble */
+  const minX = Math.min(v.left + pad.left, pad.left);
+  const maxX = Math.max(v.left + v.width - w - pad.right, iw - w - pad.right);
+  const minY = Math.min(v.top + pad.top, pad.top);
+  const maxY = Math.max(v.top + v.height - h - pad.bottom, ih - h - pad.bottom);
+
+  const loX = Math.min(minX, maxX);
+  const hiX = Math.max(minX, maxX);
+  const loY = Math.min(minY, maxY);
+  const hiY = Math.max(minY, maxY);
+
   return {
-    x: Math.min(Math.max(minX, x), maxX),
-    y: Math.min(Math.max(minY, y), maxY),
+    x: Math.min(Math.max(loX, x), hiX),
+    y: Math.min(Math.max(loY, y), hiY),
   };
 }
 
@@ -98,6 +108,21 @@ function clearScrollLockClass() {
   document.documentElement.classList.remove('imototo-livechat-dragging');
 }
 
+function releasePointerCaptureSafe() {
+  const el = captureRef.current;
+  const pid = capturePointerIdRef.current;
+  captureRef.current = null;
+  capturePointerIdRef.current = null;
+  if (!el || pid == null) return;
+  try {
+    if (typeof el.hasPointerCapture === 'function' && el.hasPointerCapture(pid)) {
+      el.releasePointerCapture(pid);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 function computeDefaultPosition(rect) {
   const v = getViewportBox();
   const pad = getSafePad();
@@ -110,6 +135,8 @@ function computeDefaultPosition(rect) {
 export default function LiveChat() {
   const rootRef = useRef(null);
   const dragRef = useRef(null);
+  const captureRef = useRef(null);
+  const capturePointerIdRef = useRef(null);
   const [hidden, setHidden] = useState(() => {
     try {
       return localStorage.getItem(DISMISS_KEY) === '1';
@@ -221,6 +248,7 @@ export default function LiveChat() {
     const onPageShow = (e) => {
       if (e.persisted) {
         clearScrollLockClass();
+        releasePointerCaptureSafe();
         dragRef.current = null;
         setDragging(false);
       }
@@ -261,6 +289,7 @@ export default function LiveChat() {
 
       dragRef.current = null;
       setDragging(false);
+      releasePointerCaptureSafe();
 
       if (!drag.moved) {
         window.location.href = SITE.mailto;
@@ -301,6 +330,7 @@ export default function LiveChat() {
       window.removeEventListener('pointerup', onEnd);
       window.removeEventListener('pointercancel', onEnd);
       clearScrollLockClass();
+      releasePointerCaptureSafe();
     };
   }, [dragging, clearPressTimer]);
 
@@ -320,6 +350,13 @@ export default function LiveChat() {
       height: rect.height,
       moved: false,
     };
+    captureRef.current = e.currentTarget;
+    capturePointerIdRef.current = e.pointerId;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* ignore — still works with window listeners on many browsers */
+    }
     setDragging(true);
 
     clearPressTimer();
@@ -330,6 +367,7 @@ export default function LiveChat() {
       dragRef.current = null;
       setDragging(false);
       clearScrollLockClass();
+      releasePointerCaptureSafe();
       try {
         localStorage.removeItem(POS_KEY);
       } catch {

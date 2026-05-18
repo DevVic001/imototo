@@ -529,9 +529,10 @@ html.imototo-livechat-dragging body {
 }
 
 /* ——— Live chat (draggable) ——— */
+/* Above fixed nav (1000–1002) & PWA install (1100); below form toasts (1200) */
 .live-chat {
   position: fixed;
-  z-index: 900;
+  z-index: 1150;
   opacity: 0;
   pointer-events: none;
   touch-action: none;
@@ -544,7 +545,7 @@ html.imototo-livechat-dragging body {
 }
 
 .live-chat--dragging {
-  z-index: 1101;
+  z-index: 1180;
   will-change: left, top;
 }
 

@@ -29,7 +29,7 @@ export const SITE = {
   },
   social: {
     instagram: 'https://www.instagram.com/imototocleaningmanchester',
-    facebook: 'https://www.facebook.com/imototocleaningmanchester',
+    facebook: 'https://www.facebook.com/profile.php?id=61589140748196',
     tiktok: 'https://www.tiktok.com/@imototocleaningltd',
   },
   /** Shown on hero — update when you have verified Google review count */

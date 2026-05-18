@@ -12,6 +12,8 @@ const BRAND = {
   name: 'Imototo Cleaning Services',
   logoUrl: 'https://imototocleanings.co.uk/assets/logo-light.svg',
   phone: '+44 7823 893420',
+  phoneE164: '+447823893420',
+  whatsappUrl: 'https://wa.me/447823893420',
   email: 'info@imototocleanings.co.uk',
 };
 
@@ -126,11 +128,14 @@ function layout({ preheader, badge, title, subtitle, bodyHtml, footerNote }) {
               </p>
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px;">
                 <tr>
-                  <td style="padding-right:10px;">
+                  <td style="padding-right:10px;padding-bottom:10px;">
                     <a href="${BRAND.site}/contact" style="display:inline-block;padding:14px 28px;background:${BRAND.primary};color:${BRAND.white};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;">View website</a>
                   </td>
-                  <td>
-                    <a href="tel:${BRAND.phone.replace(/\s/g, '')}" style="display:inline-block;padding:14px 28px;background:${BRAND.white};color:${BRAND.primary};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;border:2px solid ${BRAND.primary};">${escapeHtml(BRAND.phone)}</a>
+                  <td style="padding-right:10px;padding-bottom:10px;">
+                    <a href="tel:${escapeHtml(BRAND.phoneE164)}" style="display:inline-block;padding:14px 28px;background:${BRAND.white};color:${BRAND.primary};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;border:2px solid ${BRAND.primary};">${escapeHtml(BRAND.phone)}</a>
+                  </td>
+                  <td style="padding-bottom:10px;">
+                    <a href="${BRAND.whatsappUrl}" style="display:inline-block;padding:14px 28px;background:#25D366;color:${BRAND.white};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;">WhatsApp</a>
                   </td>
                 </tr>
               </table>

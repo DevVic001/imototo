@@ -543,11 +543,7 @@
     display: flex;
   }
 
-  .live-chat {
-    bottom: calc(4.75rem + env(safe-area-inset-bottom));
-    left: max(1rem, env(safe-area-inset-left));
-    right: auto;
-  }
+  /* Live chat position is controlled only by LiveChat.jsx (top/left). Do not set bottom/left here — it fights inline styles and can hide or stretch the widget. */
 
   .footer {
     padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
