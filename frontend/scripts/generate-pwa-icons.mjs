@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const pwaSvg = join(root, 'public/pwa/icon.svg');
-const logoSvg = join(root, 'public/assets/logo-dark.svg');
+const logoSource = join(root, 'public/assets/images/logo-lightt.jpg');
 const pwaDir = join(root, 'public/pwa');
 const assetsDir = join(root, 'public/assets');
 
@@ -29,8 +29,8 @@ if (existsSync(pwaSvg)) {
   }
 }
 
-if (existsSync(logoSvg)) {
-  const logo = readFileSync(logoSvg);
+if (existsSync(logoSource)) {
+  const logo = readFileSync(logoSource);
 
   const logoWide = await sharp(logo).resize(880).png().toBuffer();
   const { width, height } = await sharp(logoWide).metadata();

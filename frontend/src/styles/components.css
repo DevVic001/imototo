@@ -102,7 +102,9 @@
 .nav__logo img {
   height: 44px;
   width: auto;
-  max-width: min(180px, 42vw);
+  max-width: min(200px, 48vw);
+  object-fit: contain;
+  display: block;
 }
 
 .nav__desktop {
@@ -500,6 +502,10 @@
 
 .footer__logo img {
   height: 52px;
+  width: auto;
+  max-width: min(220px, 70vw);
+  object-fit: contain;
+  display: block;
   margin-bottom: 1rem;
 }
 

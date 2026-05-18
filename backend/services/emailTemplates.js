@@ -10,7 +10,7 @@ const BRAND = {
   white: '#ffffff',
   site: 'https://imototocleanings.co.uk',
   name: 'Imototo Cleaning Services',
-  logoUrl: 'https://imototocleanings.co.uk/assets/logo-light.svg',
+  logoUrl: 'https://imototocleanings.co.uk/assets/images/logo-dark.jpg',
   phone: '+44 7823 893420',
   phoneE164: '+447823893420',
   whatsappUrl: 'https://wa.me/447823893420',

@@ -1,7 +1,9 @@
-/** Brand logos — drop client PNGs as logo-dark.png / logo-light.png to override SVG */
+/** Brand logos in public/assets/images/ */
 export const ASSETS = {
-  logoDark: '/assets/logo-dark.svg',
-  logoLight: '/assets/logo-light.svg',
+  /** Dark ink on light background — nav (scrolled), footer, inner pages */
+  logoDark: '/assets/images/logo-lightt.jpg',
+  /** White logo on teal — home hero nav, dark sections, emails */
+  logoLight: '/assets/images/logo-dark.jpg',
 };
 
 export const SITE = {

@@ -508,6 +508,10 @@
 
 .page-hero__logo-single {
   height: 56px;
+  width: auto;
+  max-width: min(240px, 85vw);
+  object-fit: contain;
+  display: block;
   margin: 0 auto 1rem;
 }
 
