@@ -521,12 +521,23 @@
   color: var(--color-text-muted);
 }
 
-/* ——— Live chat ——— */
+/* ——— Live chat (draggable) ——— */
 .live-chat {
   position: fixed;
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
-  right: max(1.25rem, env(safe-area-inset-right));
   z-index: 900;
+  opacity: 0;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.live-chat--ready {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+}
+
+.live-chat--dragging {
+  z-index: 1101;
 }
 
 .contact-info-row {
@@ -572,20 +583,25 @@
   padding: 0.65rem 1.15rem 0.65rem 0.65rem;
   background: var(--color-white);
   color: var(--color-heading);
-  text-decoration: none;
-  border: 1.5px solid var(--color-border-strong);
   border: none;
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-lg);
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.9rem;
-  transition: transform 0.25s ease;
   max-width: calc(100vw - 2rem);
+  touch-action: none;
 }
 
-.live-chat__btn:hover {
+.live-chat--dragging .live-chat__btn {
+  cursor: grabbing;
+  box-shadow: 0 12px 36px rgba(2, 51, 63, 0.22);
+}
+
+.live-chat--ready:not(.live-chat--dragging) .live-chat__btn:hover {
   transform: scale(1.03);
 }
 
@@ -790,9 +806,4 @@
     height: 30px;
   }
 
-  .live-chat {
-    bottom: max(1rem, env(safe-area-inset-bottom));
-    left: max(1rem, env(safe-area-inset-left));
-    right: auto;
-  }
 }
