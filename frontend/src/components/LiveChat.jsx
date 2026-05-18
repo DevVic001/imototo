@@ -3,8 +3,8 @@ import { SITE } from '../config';
 
 const DISMISS_KEY = 'imototo-livechat-dismissed';
 const POS_KEY = 'imototo-livechat-pos';
-const DRAG_THRESHOLD = 8;
-const OFF_SCREEN_MARGIN = 48;
+const DRAG_THRESHOLD = 6;
+const OFF_SCREEN_MARGIN = 40;
 
 function ChatAvatar() {
   return (
@@ -35,7 +35,7 @@ function ChatAvatar() {
 }
 
 function clampPosition(x, y, w, h) {
-  const pad = 10;
+  const pad = 8;
   const maxX = Math.max(pad, window.innerWidth - w - pad);
   const maxY = Math.max(pad, window.innerHeight - h - pad);
   return {
@@ -76,7 +76,7 @@ export default function LiveChat() {
   const defaultPosition = useCallback(() => {
     const rect = measure();
     if (!rect) return { x: 16, y: 16 };
-    const pad = 20;
+    const pad = 16;
     const mobile = window.innerWidth <= 600;
     const x = mobile ? pad : window.innerWidth - rect.width - pad;
     const y = window.innerHeight - rect.height - pad;
@@ -120,74 +120,93 @@ export default function LiveChat() {
     return () => window.removeEventListener('resize', onResize);
   }, [hidden, pos, measure]);
 
+  useEffect(() => {
+    if (!dragging) return undefined;
+
+    const onMove = (e) => {
+      const drag = dragRef.current;
+      if (!drag || e.pointerId !== drag.pointerId) return;
+
+      if (e.cancelable) e.preventDefault();
+
+      const dx = e.clientX - drag.startX;
+      const dy = e.clientY - drag.startY;
+      if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) drag.moved = true;
+
+      setPos({
+        x: e.clientX - drag.offsetX,
+        y: e.clientY - drag.offsetY,
+      });
+    };
+
+    const onEnd = (e) => {
+      const drag = dragRef.current;
+      if (!drag || e.pointerId !== drag.pointerId) return;
+
+      dragRef.current = null;
+      setDragging(false);
+
+      if (!drag.moved) {
+        window.location.href = SITE.mailto;
+        return;
+      }
+
+      const x = e.clientX - drag.offsetX;
+      const y = e.clientY - drag.offsetY;
+
+      if (isOffScreen(x, y, drag.width, drag.height)) {
+        try {
+          localStorage.setItem(DISMISS_KEY, '1');
+        } catch {
+          /* ignore */
+        }
+        setHidden(true);
+        return;
+      }
+
+      const next = clampPosition(x, y, drag.width, drag.height);
+      setPos(next);
+      try {
+        localStorage.setItem(POS_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+    };
+
+    window.addEventListener('pointermove', onMove, { passive: false });
+    window.addEventListener('pointerup', onEnd);
+    window.addEventListener('pointercancel', onEnd);
+
+    const prevTouchAction = document.body.style.touchAction;
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onEnd);
+      window.removeEventListener('pointercancel', onEnd);
+      document.body.style.touchAction = prevTouchAction;
+    };
+  }, [dragging]);
+
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
+
     const rect = measure();
     if (!rect || !pos) return;
+
+    e.preventDefault();
 
     dragRef.current = {
       pointerId: e.pointerId,
       startX: e.clientX,
       startY: e.clientY,
-      originX: pos.x,
-      originY: pos.y,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
       width: rect.width,
       height: rect.height,
       moved: false,
     };
     setDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-
-  const onPointerMove = (e) => {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== e.pointerId) return;
-
-    const dx = e.clientX - drag.startX;
-    const dy = e.clientY - drag.startY;
-    if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) drag.moved = true;
-
-    setPos({ x: drag.originX + dx, y: drag.originY + dy });
-  };
-
-  const finishDrag = (e) => {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== e.pointerId) return;
-
-    dragRef.current = null;
-    setDragging(false);
-
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {
-      /* ignore */
-    }
-
-    if (!drag.moved) {
-      window.location.href = SITE.mailto;
-      return;
-    }
-
-    const x = drag.originX + (e.clientX - drag.startX);
-    const y = drag.originY + (e.clientY - drag.startY);
-
-    if (isOffScreen(x, y, drag.width, drag.height)) {
-      try {
-        localStorage.setItem(DISMISS_KEY, '1');
-      } catch {
-        /* ignore */
-      }
-      setHidden(true);
-      return;
-    }
-
-    const next = clampPosition(x, y, drag.width, drag.height);
-    setPos(next);
-    try {
-      localStorage.setItem(POS_KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
   };
 
   if (hidden) return null;
@@ -202,12 +221,9 @@ export default function LiveChat() {
         className="live-chat__btn"
         role="button"
         tabIndex={0}
-        aria-label={`Email ${SITE.email}. Drag to move; drag off screen to hide.`}
-        title={`${SITE.email} — drag to move`}
+        aria-label={`We're listening — email ${SITE.email}. Drag to move; drag off screen to hide.`}
+        title={`${SITE.email} — drag to move, drag off screen to hide`}
         onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={finishDrag}
-        onPointerCancel={finishDrag}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -215,8 +231,12 @@ export default function LiveChat() {
           }
         }}
       >
+        <span className="live-chat__listening">
+          <span className="live-chat__listening-dot" />
+          We&apos;re listening
+        </span>
         <ChatAvatar />
-        <span className="live-chat__label">We&apos;re online — Email us</span>
+        <span className="live-chat__label">Email us — we&apos;re online</span>
       </div>
     </div>
   );
