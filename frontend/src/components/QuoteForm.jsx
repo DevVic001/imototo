@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { API_BASE, SERVICES, SITE } from '../config';
+import FormToast from './FormToast';
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -148,38 +149,27 @@ export default function QuoteForm() {
   };
 
   return (
-    <form className="quote-form-card" onSubmit={submit} noValidate>
+    <>
       {status === 'success' && (
-        <div className="form-toast form-toast--success" role="status">
-          <p className="form-toast__message">
-            Thank you! Your quote request was sent to {SITE.email}. We&apos;ll reply shortly.
-          </p>
-          <button
-            type="button"
-            className="form-toast__close"
-            aria-label="Dismiss message"
-            onClick={() => setStatus(null)}
-          >
-            ×
-          </button>
-        </div>
+        <FormToast
+          type="success"
+          title="Quote sent"
+          message={`Thank you! We received your request and will reply shortly at ${SITE.email}.`}
+          onClose={() => setStatus(null)}
+          autoCloseMs={8000}
+        />
       )}
       {status === 'error' && (
-        <div className="form-toast form-toast--error" role="alert">
-          <p className="form-toast__message">
-            Something went wrong. Please WhatsApp us at {SITE.phoneDisplay} or email {SITE.email}.
-          </p>
-          <button
-            type="button"
-            className="form-toast__close"
-            aria-label="Dismiss message"
-            onClick={() => setStatus(null)}
-          >
-            ×
-          </button>
-        </div>
+        <FormToast
+          type="error"
+          title="Could not send"
+          message={`Something went wrong. WhatsApp ${SITE.phoneDisplay} or email ${SITE.email}.`}
+          onClose={() => setStatus(null)}
+          autoCloseMs={10000}
+        />
       )}
 
+    <form className="quote-form-card" onSubmit={submit} noValidate>
       <h2 style={{ fontFamily: 'var(--font-display)', marginBottom: '0.5rem' }}>Get a Free Quote</h2>
       <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
         Fill in the form below and we&apos;ll get back to you shortly. Fields marked{' '}
@@ -314,5 +304,6 @@ export default function QuoteForm() {
         {loading ? 'Sending…' : 'Submit quote request'}
       </button>
     </form>
+    </>
   );
 }
