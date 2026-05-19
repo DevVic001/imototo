@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import PageHero from '../components/PageHero';
 import { API_BASE, SITE } from '../config';
 import { IMAGES } from '../config/images';
@@ -8,10 +8,30 @@ const DEFAULT_TITLE = 'Imototo Cleaning Services | Home & Commercial Cleaning Ma
 
 export default function QuoteThankYou() {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const token = searchParams.get('t');
-  const [status, setStatus] = useState('loading');
+  const justVerified = location.state?.quoteVerified === true;
+  const [status, setStatus] = useState(() => {
+    if (justVerified) return 'ok';
+    if (!token) return 'denied';
+    return 'loading';
+  });
 
   useEffect(() => {
+    if (justVerified) {
+      document.title = 'Quote received | Imototo Cleaning Services';
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', {
+          event_category: 'quote',
+          event_label: 'contact_form',
+        });
+      }
+      return () => {
+        document.title = DEFAULT_TITLE;
+      };
+    }
+
     if (!token) {
       setStatus('denied');
       return;
@@ -28,15 +48,7 @@ export default function QuoteThankYou() {
         if (cancelled) return;
 
         if (res.ok && data.ok) {
-          setStatus('ok');
-          window.history.replaceState(null, '', '/contact/thank-you');
-          document.title = 'Quote received | Imototo Cleaning Services';
-          if (typeof window.gtag === 'function') {
-            window.gtag('event', 'generate_lead', {
-              event_category: 'quote',
-              event_label: 'contact_form',
-            });
-          }
+          navigate('/contact/thank-you', { replace: true, state: { quoteVerified: true } });
         } else {
           setStatus('denied');
         }
@@ -49,7 +61,7 @@ export default function QuoteThankYou() {
       cancelled = true;
       document.title = DEFAULT_TITLE;
     };
-  }, [token]);
+  }, [token, justVerified, navigate]);
 
   if (status === 'loading') {
     return (
