@@ -290,6 +290,20 @@
   box-shadow: none;
 }
 
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-bottom: 0.85rem;
+  color: #e5a00d;
+}
+
+.star-rating__icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
 .testimonial-card--premium .testimonial-card__quote {
   font-style: normal;
   font-size: 1.02rem;

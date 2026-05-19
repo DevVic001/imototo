@@ -9,6 +9,7 @@ import PhotoGallery from '../components/PhotoGallery';
 import LocalImage from '../components/LocalImage';
 import { IMAGES } from '../config/images';
 import ServiceIcon from '../components/ServiceIcon';
+import StarRating from '../components/StarRating';
 
 const HOME_SERVICE_IDS = ['residential', 'airbnb', 'tenancy', 'office'];
 
@@ -183,6 +184,7 @@ export default function Home() {
           <div className="testimonials-grid testimonials-grid--premium">
             {TESTIMONIALS.map((t) => (
               <blockquote key={t.name} className="testimonial-card testimonial-card--premium">
+                <StarRating />
                 <p className="testimonial-card__quote">{t.quote}</p>
                 <footer className="testimonial-card__author">
                   <span className="testimonial-card__avatar" aria-hidden="true">
