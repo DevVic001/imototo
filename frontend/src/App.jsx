@@ -12,10 +12,12 @@ import QuoteThankYou from './pages/QuoteThankYou';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import NotFound from './pages/NotFound';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <main>
         <Routes>

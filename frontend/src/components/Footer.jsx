@@ -1,5 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { SITE, SERVICES, ASSETS } from '../config';
+
+function scrollPageTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+}
+
+function FooterRouteLink({ to, children }) {
+  const { pathname } = useLocation();
+  return (
+    <Link
+      to={to}
+      onClick={() => {
+        if (pathname === to) scrollPageTop();
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
 
 const SOCIAL = [
   { label: 'Instagram', href: SITE.social.instagram },
@@ -32,12 +50,12 @@ export default function Footer() {
           <div>
             <h4 className="footer__title">Quick links</h4>
             <ul className="contact-info-list">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/about">About Us</Link></li>
-              <li><Link to="/services">Services</Link></li>
-              <li><Link to="/contact">Get a Quote</Link></li>
-              <li><Link to="/terms">Terms &amp; conditions</Link></li>
-              <li><Link to="/privacy">Privacy &amp; GDPR</Link></li>
+              <li><FooterRouteLink to="/">Home</FooterRouteLink></li>
+              <li><FooterRouteLink to="/about">About Us</FooterRouteLink></li>
+              <li><FooterRouteLink to="/services">Services</FooterRouteLink></li>
+              <li><FooterRouteLink to="/contact">Get a Quote</FooterRouteLink></li>
+              <li><FooterRouteLink to="/terms">Terms &amp; conditions</FooterRouteLink></li>
+              <li><FooterRouteLink to="/privacy">Privacy &amp; GDPR</FooterRouteLink></li>
             </ul>
           </div>
 
@@ -93,9 +111,9 @@ export default function Footer() {
 
         <div className="footer__bottom">
           <p className="footer__legal">
-            <Link to="/terms">Terms &amp; conditions</Link>
+            <FooterRouteLink to="/terms">Terms &amp; conditions</FooterRouteLink>
             <span aria-hidden="true"> · </span>
-            <Link to="/privacy">Privacy &amp; GDPR</Link>
+            <FooterRouteLink to="/privacy">Privacy &amp; GDPR</FooterRouteLink>
           </p>
           <p>
             &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.{' '}
