@@ -981,20 +981,6 @@
   color: var(--color-text-muted);
 }
 
-.footer__legal {
-  margin-bottom: 0.5rem;
-}
-
-.footer__legal a {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-}
-
-.footer__legal a:hover {
-  text-decoration: underline;
-  color: #fff;
-}
-
 .not-found__inner {
   max-width: 32rem;
   margin-inline: auto;

@@ -527,6 +527,21 @@
   color: var(--color-text-muted);
 }
 
+.footer__legal {
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.footer__legal a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer__legal a:hover {
+  color: var(--color-primary-muted);
+}
+
 /* ——— Live chat (draggable) ——— */
 /* Above fixed nav (1000–1002) & PWA install (1100); below form toasts (1200) */
 .live-chat {
