@@ -2,15 +2,12 @@ import { Link } from 'react-router-dom';
 import LegalDocument from '../components/LegalDocument';
 import { SITE } from '../config';
 
-const UPDATED = '19 May 2026';
-
 export default function Terms() {
   return (
     <LegalDocument
       breadcrumb="Terms & conditions"
       title="Terms & conditions"
       lead={`Company policies for bookings, payments and services at ${SITE.name}.`}
-      updated={UPDATED}
     >
       <p className="legal-doc__intro">
         At {SITE.name}, we are committed to providing reliable, professional and high-quality cleaning

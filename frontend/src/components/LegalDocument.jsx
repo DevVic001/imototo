@@ -4,9 +4,9 @@ import { SITE } from '../config';
 import { IMAGES } from '../config/images';
 
 /**
- * @param {{ breadcrumb: string, title: string, lead: string, updated: string, children: import('react').ReactNode }} props
+ * @param {{ breadcrumb: string, title: string, lead: string, children: import('react').ReactNode }} props
  */
-export default function LegalDocument({ breadcrumb, title, lead, updated, children }) {
+export default function LegalDocument({ breadcrumb, title, lead, children }) {
   const heroSrc = IMAGES.hero?.src;
 
   return (
@@ -20,7 +20,6 @@ export default function LegalDocument({ breadcrumb, title, lead, updated, childr
       />
       <section className="section section--white">
         <div className="container legal-doc">
-          <p className="legal-doc__updated">Last updated: {updated}</p>
           {children}
           <nav className="legal-doc__nav" aria-label="Related legal pages">
             <Link to="/terms">Terms &amp; conditions</Link>

@@ -2,15 +2,12 @@ import { Link } from 'react-router-dom';
 import LegalDocument from '../components/LegalDocument';
 import { SITE } from '../config';
 
-const UPDATED = '19 May 2026';
-
 export default function Privacy() {
   return (
     <LegalDocument
       breadcrumb="Privacy & GDPR"
       title="Privacy Policy & GDPR"
       lead={`How ${SITE.name} collects, uses and protects your personal information (UK GDPR).`}
-      updated={UPDATED}
     >
       <p className="legal-doc__intro">
         {SITE.name} respects your privacy. This policy explains what information we collect, why we use it,
@@ -129,9 +126,8 @@ export default function Privacy() {
 
       <h2>Policy updates</h2>
       <p>
-        {SITE.name} may update this Privacy Policy from time to time. The &quot;Last updated&quot; date at
-        the top of this page will change when we do. Continued use of our services after changes constitutes
-        notice of the updated policy where appropriate.
+        {SITE.name} may update this Privacy Policy from time to time. Continued use of our services after
+        changes constitutes notice of the updated policy where appropriate.
       </p>
     </LegalDocument>
   );
