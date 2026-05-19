@@ -16,11 +16,9 @@ export const SITE = {
   phoneDisplay: '+44 7823 893420',
   whatsapp: 'https://wa.me/447823893420',
   address: {
-    line1: '20 Clarke Street',
+    full: 'Bolton, England',
     city: 'Bolton',
-    postcode: 'BL1 4HP',
-    country: 'United Kingdom',
-    full: '20 Clarke Street, Bolton, BL1 4HP, United Kingdom',
+    country: 'England',
   },
   areas: 'Manchester, Bolton and surrounding areas',
   tagline: 'clean space, clean mind..',

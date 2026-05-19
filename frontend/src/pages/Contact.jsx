@@ -9,7 +9,7 @@ const CONTACT_ROWS = [
   { icon: 'mail', label: 'Email', value: SITE.email, href: SITE.mailto },
   {
     icon: 'location',
-    label: 'Address',
+    label: 'Based in',
     value: SITE.address.full,
     href: null,
   },

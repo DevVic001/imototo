@@ -55,7 +55,7 @@ export default function Footer() {
             <ul className="contact-info-list">
               <li>
                 <span>
-                  <strong>Address</strong>
+                  <strong>Based in</strong>
                   {SITE.address.full}
                 </span>
               </li>
