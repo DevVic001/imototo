@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE, SERVICES, SITE } from '../config';
 import FormToast from './FormToast';
 
@@ -40,6 +40,7 @@ const initial = {
   preferredTime: '',
   message: '',
   heardFrom: '',
+  privacyConsent: false,
 };
 
 export default function QuoteForm() {
@@ -100,6 +101,7 @@ export default function QuoteForm() {
     if (!form.postcode.trim()) e.postcode = 'Required';
     if (!form.service) e.service = 'Select a service';
     if (!form.message.trim()) e.message = 'Tell us about your cleaning needs';
+    if (!form.privacyConsent) e.privacyConsent = 'You must agree to the privacy policy';
 
     if (form.preferredDate.trim()) {
       const parsed = parseIsoDate(form.preferredDate.trim());
@@ -132,10 +134,12 @@ export default function QuoteForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
           Object.fromEntries(
-            Object.entries(form).map(([key, value]) => [
-              key,
-              typeof value === 'string' ? value.trim() : value,
-            ])
+            Object.entries(form)
+              .filter(([key]) => key !== 'privacyConsent')
+              .map(([key, value]) => [
+                key,
+                typeof value === 'string' ? value.trim() : value,
+              ])
           )
         ),
       });
@@ -295,6 +299,26 @@ export default function QuoteForm() {
       <div className="form-group">
         <label htmlFor="heardFrom">How did you hear about us?</label>
         <input id="heardFrom" name="heardFrom" value={form.heardFrom} onChange={set} />
+      </div>
+
+      <div className={`form-group form-group--checkbox ${errors.privacyConsent ? 'form-group--error' : ''}`}>
+        <label className="form-checkbox">
+          <input
+            type="checkbox"
+            name="privacyConsent"
+            checked={form.privacyConsent}
+            onChange={(e) => {
+              setForm((f) => ({ ...f, privacyConsent: e.target.checked }));
+              if (errors.privacyConsent) setErrors((err) => ({ ...err, privacyConsent: '' }));
+            }}
+          />
+          <span>
+            I agree to the <Link to="/privacy">Privacy Policy</Link> and{' '}
+            <Link to="/terms">Terms &amp; conditions</Link>. I understand my details will be used to respond
+            to my enquiry.
+          </span>
+        </label>
+        {errors.privacyConsent && <p className="form-error">{errors.privacyConsent}</p>}
       </div>
 
       <button type="submit" className="btn btn--primary" style={{ width: '100%', marginTop: '0.5rem' }} disabled={loading}>

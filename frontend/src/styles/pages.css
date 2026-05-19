@@ -911,6 +911,90 @@
   padding: 3rem 1rem;
 }
 
+/* ——— Legal pages ——— */
+.legal-doc {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.legal-doc__updated {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+}
+
+.legal-doc__intro {
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+  color: var(--color-text);
+}
+
+.legal-doc h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin: 2rem 0 0.75rem;
+  color: var(--color-primary);
+}
+
+.legal-doc p,
+.legal-doc li {
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+.legal-doc ul {
+  margin: 0 0 1rem;
+  padding-left: 1.35rem;
+}
+
+.legal-doc li + li {
+  margin-top: 0.4rem;
+}
+
+.legal-doc a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-doc__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  font-weight: 600;
+}
+
+.legal-doc__nav a {
+  text-decoration: none;
+}
+
+.legal-doc__nav a:hover {
+  text-decoration: underline;
+}
+
+.legal-doc__contact {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.footer__legal {
+  margin-bottom: 0.5rem;
+}
+
+.footer__legal a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+
+.footer__legal a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
 /* ——— Page hero (inner pages) ——— */
 .page-hero {
   padding: calc(var(--header-h) + 2.5rem) 0 2.5rem;

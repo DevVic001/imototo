@@ -90,6 +90,11 @@ export default function Footer() {
         </div>
 
         <div className="footer__bottom">
+          <p className="footer__legal">
+            <Link to="/terms">Terms &amp; conditions</Link>
+            <span aria-hidden="true"> · </span>
+            <Link to="/privacy">Privacy &amp; GDPR</Link>
+          </p>
           <p>
             &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.{' '}
             <a href={`https://${SITE.domain}`}>{SITE.domain}</a>

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "icons": "node scripts/generate-pwa-icons.mjs",
+    "ads-logo": "node scripts/generate-ads-logo.mjs",
     "dev": "vite",
     "build": "npm run icons && vite build",
     "preview": "vite preview"
