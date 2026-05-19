@@ -16,7 +16,7 @@ const CONTACT_ROWS = [
   {
     icon: 'clock',
     label: 'Hours',
-    value: `${SITE.hours.weekdays} · ${SITE.hours.saturday}`,
+    value: `${SITE.hours.weekdays} · ${SITE.hours.saturday} · ${SITE.hours.sunday}`,
     href: null,
   },
 ];

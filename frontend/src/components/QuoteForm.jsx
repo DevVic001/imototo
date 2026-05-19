@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE, SERVICES, SITE } from '../config';
 import FormToast from './FormToast';
 
@@ -42,6 +43,7 @@ const initial = {
 };
 
 export default function QuoteForm() {
+  const navigate = useNavigate();
   const [form, setForm] = useState(initial);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState(null);
@@ -139,8 +141,12 @@ export default function QuoteForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Failed to send');
-      setStatus('success');
-      setForm(initial);
+      const thankYouToken = data.thankYouToken;
+      if (!thankYouToken || typeof thankYouToken !== 'string') {
+        throw new Error('Invalid server response');
+      }
+      navigate(`/contact/thank-you?t=${encodeURIComponent(thankYouToken)}`, { replace: true });
+      return;
     } catch (err) {
       setStatus('error');
     } finally {
@@ -150,15 +156,6 @@ export default function QuoteForm() {
 
   return (
     <>
-      {status === 'success' && (
-        <FormToast
-          type="success"
-          title="Quote sent"
-          message={`Thank you! We received your request and will reply shortly at ${SITE.email}.`}
-          onClose={() => setStatus(null)}
-          autoCloseMs={8000}
-        />
-      )}
       {status === 'error' && (
         <FormToast
           type="error"

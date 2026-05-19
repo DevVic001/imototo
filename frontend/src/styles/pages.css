@@ -879,6 +879,38 @@
   border-bottom: 2px solid var(--color-secondary);
 }
 
+.quote-thank-you {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+.quote-thank-you__card h2 {
+  font-family: var(--font-display);
+  margin-bottom: 1rem;
+}
+
+.quote-thank-you__list {
+  margin: 0 0 1.5rem;
+  padding-left: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.quote-thank-you__list li + li {
+  margin-top: 0.5rem;
+}
+
+.quote-thank-you__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.quote-thank-you__loading {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 3rem 1rem;
+}
+
 /* ——— Page hero (inner pages) ——— */
 .page-hero {
   padding: calc(var(--header-h) + 2.5rem) 0 2.5rem;

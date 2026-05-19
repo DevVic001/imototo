@@ -25,7 +25,7 @@ export const SITE = {
   hours: {
     weekdays: 'Mon–Fri: 8:00am – 6:00pm',
     saturday: 'Sat: 9:00am – 4:00pm',
-    sunday: 'Sun: Closed (emergency quotes via WhatsApp)',
+    sunday: 'Sun: 10:00am – 5:00pm',
   },
   social: {
     instagram: 'https://www.instagram.com/imototocleaningmanchester',

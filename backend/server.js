@@ -3,6 +3,7 @@ const cors = require('cors');
 const https = require('https');
 const dotenv = require('dotenv');
 const emailService = require('./services/emailService.js');
+const { issueThankYouToken, consumeThankYouToken } = require('./services/thankYouTokens.js');
 
 dotenv.config();
 
@@ -68,13 +69,26 @@ app.post('/api/quote', async (req, res) => {
 
     const result = await emailService.sendQuoteEmail(body);
     if (result.success) {
-      return res.json({ success: true, message: 'Quote request submitted successfully' });
+      const thankYouToken = issueThankYouToken();
+      return res.json({
+        success: true,
+        message: 'Quote request submitted successfully',
+        thankYouToken,
+      });
     }
     return res.status(500).json({ error: 'Failed to send email', details: result.error });
   } catch (err) {
     console.error('Quote error:', err);
     return res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+app.get('/api/quote/thank-you-verify', (req, res) => {
+  const token = typeof req.query.t === 'string' ? req.query.t.trim() : '';
+  if (!consumeThankYouToken(token)) {
+    return res.status(403).json({ ok: false, error: 'Invalid or expired link' });
+  }
+  return res.json({ ok: true });
 });
 
 app.post('/api/contact', async (req, res) => {

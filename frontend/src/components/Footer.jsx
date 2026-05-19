@@ -81,6 +81,8 @@ export default function Footer() {
                   {SITE.hours.weekdays}
                   <br />
                   {SITE.hours.saturday}
+                  <br />
+                  {SITE.hours.sunday}
                 </span>
               </li>
             </ul>
