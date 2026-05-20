@@ -1,54 +1,68 @@
-import { useEffect, useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import PageHero from '../components/PageHero';
 import { API_BASE, SITE } from '../config';
 import { IMAGES } from '../config/images';
 
 const DEFAULT_TITLE = 'Imototo Cleaning Services | Home & Commercial Cleaning Manchester & Bolton';
+const VERIFY_TIMEOUT_MS = 15000;
+
+function hasTokenInUrl() {
+  return new URLSearchParams(window.location.search).has('t');
+}
 
 export default function QuoteThankYou() {
   const [searchParams] = useSearchParams();
-  const location = useLocation();
-  const navigate = useNavigate();
   const token = searchParams.get('t');
-  const justVerified = location.state?.quoteVerified === true;
-  const [status, setStatus] = useState(() => {
-    if (justVerified) return 'ok';
-    if (!token) return 'denied';
-    return 'loading';
-  });
+  const [status, setStatus] = useState('loading');
 
-  useEffect(() => {
-    if (justVerified) {
-      document.title = 'Quote received | Imototo Cleaning Services';
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'generate_lead', {
-          event_category: 'quote',
-          event_label: 'contact_form',
-        });
-      }
-      return () => {
-        document.title = DEFAULT_TITLE;
-      };
-    }
-
+  // No token on first paint or after refresh → never show thank-you (unless verifying now).
+  useLayoutEffect(() => {
+    sessionStorage.removeItem('imototo-quote-thank-you');
     if (!token) {
       setStatus('denied');
+    }
+  }, [token]);
+
+  // Browser back/forward cache can restore the old “success” screen — force a real check.
+  useEffect(() => {
+    const onPageShow = (event) => {
+      if (event.persisted && !hasTokenInUrl()) {
+        window.location.replace('/contact');
+      }
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
       return;
     }
 
     let cancelled = false;
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), VERIFY_TIMEOUT_MS);
 
     (async () => {
       try {
         const res = await fetch(
-          `${API_BASE}/api/quote/thank-you-verify?t=${encodeURIComponent(token)}`
+          `${API_BASE}/api/quote/thank-you-verify?t=${encodeURIComponent(token)}`,
+          { signal: controller.signal }
         );
         const data = await res.json().catch(() => ({}));
         if (cancelled) return;
 
         if (res.ok && data.ok) {
-          navigate('/contact/thank-you', { replace: true, state: { quoteVerified: true } });
+          setStatus('ok');
+          window.history.replaceState(null, '', '/contact/thank-you');
+          document.title = 'Quote received | Imototo Cleaning Services';
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'generate_lead', {
+              event_category: 'quote',
+              event_label: 'contact_form',
+            });
+          }
         } else {
           setStatus('denied');
         }
@@ -59,9 +73,11 @@ export default function QuoteThankYou() {
 
     return () => {
       cancelled = true;
+      window.clearTimeout(timeoutId);
+      controller.abort();
       document.title = DEFAULT_TITLE;
     };
-  }, [token, justVerified, navigate]);
+  }, [token]);
 
   if (status === 'loading') {
     return (

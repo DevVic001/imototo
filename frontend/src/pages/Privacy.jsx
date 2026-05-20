@@ -103,11 +103,13 @@ export default function Privacy() {
         one month in most cases.
       </p>
       <p>
-        You may also complain to the UK Information Commissioner&apos;s Office (ICO) at{' '}
+        If you are unhappy with how we have handled your data, please contact us first so we can try to
+        put things right. You also have the right to contact the UK Information Commissioner&apos;s Office
+        (ICO), the UK regulator for data protection, at{' '}
         <a href="https://ico.org.uk" target="_blank" rel="noreferrer">
           ico.org.uk
         </a>
-        .
+        . This is a standard right under UK law and does not mean there is a problem with our service.
       </p>
 
       <h2>Cookies &amp; analytics</h2>
