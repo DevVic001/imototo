@@ -70,8 +70,9 @@ export default function Terms() {
       <h2>Terms &amp; conditions</h2>
       <p>
         By booking a service with {SITE.name}, clients agree to the company&apos;s booking, payment and
-        cancellation policies. Prices quoted are based on the information provided by the client and may be
-        adjusted if the condition or size of the property differs significantly from the original description.
+        cancellation policies. Any price we agree with you by email, phone or WhatsApp is based on the
+        details you provide and may be adjusted if the condition or size of the property differs
+        significantly from what was described when the price was agreed.
       </p>
       <p>
         {SITE.name} reserves the right to refuse or discontinue services where conditions are unsafe,
