@@ -69,7 +69,9 @@ export default function ReplyForm({ onLogout }) {
     <div className="admin-shell">
       <header className="admin-topbar admin-topbar--compact">
         <div className="admin-topbar__row">
-          <img src={LOGO_LIGHT} alt="" className="admin-topbar__logo-sm" />
+          <div className="admin-topbar__brand admin-topbar__brand--sm">
+            <img src={LOGO_LIGHT} alt="" className="admin-topbar__logo" />
+          </div>
           <button type="button" className="admin-logout" onClick={logout}>
             Sign out
           </button>

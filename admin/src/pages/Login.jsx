@@ -29,7 +29,9 @@ export default function Login({ onSuccess }) {
   return (
     <div className="admin-shell admin-shell--auth">
       <header className="admin-topbar">
-        <img src={LOGO_DARK} alt={SITE.name} className="admin-topbar__logo" />
+        <div className="admin-topbar__brand">
+          <img src={LOGO_DARK} alt={SITE.name} className="admin-topbar__logo" />
+        </div>
         <p className="admin-topbar__eyebrow">Staff only</p>
         <h1 className="admin-topbar__title">Reply to customers</h1>
       </header>
