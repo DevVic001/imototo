@@ -13,6 +13,18 @@ export async function adminLogin(password) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
+    if (res.status === 503) {
+      throw new Error('Add ADMIN_PASSWORD on Render and redeploy the backend.');
+    }
+    if (res.status === 401) {
+      throw new Error(data.error || 'Wrong password');
+    }
+    if (res.status === 500 || res.status === 502) {
+      const hint = API_BASE
+        ? 'Render API error — redeploy backend with admin routes, or wait if service is waking up.'
+        : 'Start local backend: cd backend → npm run dev';
+      throw new Error(data.error || data.details || hint);
+    }
     throw new Error(data.error || 'Login failed');
   }
   return data;

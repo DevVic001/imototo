@@ -209,6 +209,9 @@ app.post('/api/contact', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Imototo API listening on port ${PORT}`);
+  if (!process.env.ADMIN_PASSWORD) {
+    console.warn('ADMIN_PASSWORD is not set — admin login will return 503');
+  }
 
   const keepAliveUrl = 'https://imototo.onrender.com';
   setInterval(() => {
