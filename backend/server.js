@@ -22,6 +22,7 @@ const allowedOrigins = [
   'https://www.imototocleanings.co.uk',
   'http://localhost:5174',
   'http://127.0.0.1:5174',
+  'https://admin.dashboard.imototocleanings.co.uk',
 ];
 
 if (process.env.ADMIN_ALLOWED_ORIGINS) {
