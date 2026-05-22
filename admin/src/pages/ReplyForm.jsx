@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { adminLogout, sendCustomerReply } from '../api';
+import AdminBottomNav from '../components/AdminBottomNav';
 import AdminToast from '../components/AdminToast';
 import { LOGO_LIGHT, SITE } from '../config';
 
@@ -13,6 +14,8 @@ const initial = {
 };
 
 export default function ReplyForm({ onLogout }) {
+  const formRef = useRef(null);
+  const topRef = useRef(null);
   const fileInputRef = useRef(null);
   const [form, setForm] = useState(initial);
   const [attachment, setAttachment] = useState(null);
@@ -97,16 +100,19 @@ export default function ReplyForm({ onLogout }) {
     onLogout();
   };
 
+  const scrollToTop = () => {
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const triggerSend = () => {
+    formRef.current?.requestSubmit();
+  };
+
   return (
-    <div className="admin-shell">
-      <header className="admin-topbar admin-topbar--compact">
-        <div className="admin-topbar__row">
-          <div className="admin-topbar__brand admin-topbar__brand--sm">
-            <img src={LOGO_LIGHT} alt="" className="admin-topbar__logo" />
-          </div>
-          <button type="button" className="admin-logout" onClick={logout}>
-            Sign out
-          </button>
+    <div className="admin-shell admin-shell--with-nav">
+      <header className="admin-topbar admin-topbar--compact" ref={topRef}>
+        <div className="admin-topbar__brand admin-topbar__brand--center">
+          <img src={LOGO_LIGHT} alt="" className="admin-topbar__logo" />
         </div>
         <h1 className="admin-topbar__title">Send quote reply</h1>
         <p className="admin-topbar__sub">
@@ -124,7 +130,12 @@ export default function ReplyForm({ onLogout }) {
           />
         ) : null}
 
-        <form className="admin-card quote-form-card" onSubmit={submit}>
+        <form
+          ref={formRef}
+          id="admin-reply-form"
+          className="admin-card quote-form-card"
+          onSubmit={submit}
+        >
           <h2 className="quote-section-title">Customer</h2>
 
           <div className={`form-group ${errors.to ? 'form-group--error' : ''}`}>
@@ -213,7 +224,7 @@ export default function ReplyForm({ onLogout }) {
             {errors.attachment ? <p className="form-error">{errors.attachment}</p> : null}
           </div>
 
-          <button type="submit" className="btn btn--primary btn--block" disabled={loading}>
+          <button type="submit" className="btn btn--primary btn--block btn--submit-desktop" disabled={loading}>
             {loading ? 'Sending…' : 'Send email to customer'}
           </button>
         </form>
@@ -222,6 +233,13 @@ export default function ReplyForm({ onLogout }) {
           Sends from {SITE.name} with logo and contact details. Replies go to your business inbox.
         </p>
       </main>
+
+      <AdminBottomNav
+        onReplyTop={scrollToTop}
+        onSend={triggerSend}
+        onLogout={logout}
+        sending={loading}
+      />
     </div>
   );
 }

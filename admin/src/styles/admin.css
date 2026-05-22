@@ -17,6 +17,7 @@
   --shadow-md: 0 8px 32px rgba(2, 51, 63, 0.12);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --admin-nav-h: 76px;
 }
 
 *,
@@ -59,6 +60,10 @@ select {
   flex-direction: column;
 }
 
+.admin-shell--with-nav .admin-main {
+  padding-bottom: calc(100px + var(--safe-bottom));
+}
+
 .admin-shell--auth {
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 42%, var(--color-secondary-soft) 42%);
 }
@@ -79,15 +84,14 @@ select {
   min-height: 48px;
 }
 
-.admin-topbar__brand--sm {
-  margin: 0;
-  min-height: 40px;
-  justify-content: flex-start;
+.admin-topbar__brand--center {
+  margin: 0 auto 8px;
+  min-height: 44px;
 }
 
-.admin-topbar__brand--sm .admin-topbar__logo {
-  height: 40px;
-  max-width: 160px;
+.admin-topbar__brand--center .admin-topbar__logo {
+  height: 44px;
+  max-width: 180px;
 }
 
 .admin-topbar--compact {
@@ -136,16 +140,143 @@ select {
   line-height: 1.45;
 }
 
-.admin-logout {
-  border: 1px solid rgba(255, 255, 255, 0.35);
+/* ——— Bottom nav (elevated centre FAB) ——— */
+.admin-bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  z-index: 100;
+  padding: 0 12px calc(10px + var(--safe-bottom));
+  pointer-events: none;
+}
+
+.admin-bottom-nav__bar {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 4px;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
+  box-shadow:
+    0 -4px 24px rgba(2, 51, 63, 0.08),
+    0 12px 40px rgba(2, 51, 63, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.admin-bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border: none;
   background: transparent;
-  color: var(--color-white);
+  color: var(--color-text-muted);
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 999px;
   cursor: pointer;
+  border-radius: 14px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.admin-bottom-nav__item:first-child {
+  justify-self: start;
+}
+
+.admin-bottom-nav__item:last-child {
+  justify-self: end;
+}
+
+.admin-bottom-nav__item--active {
+  color: var(--color-primary);
+}
+
+.admin-bottom-nav__item--active .admin-bottom-nav__icon {
+  background: rgba(2, 51, 63, 0.08);
+  color: var(--color-primary);
+}
+
+.admin-bottom-nav__item:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.admin-bottom-nav__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: inherit;
+}
+
+.admin-bottom-nav__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.admin-bottom-nav__fab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: -28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  justify-self: center;
+}
+
+.admin-bottom-nav__fab:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-bottom-nav__fab-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #034a5a 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%);
+  color: var(--color-white);
+  box-shadow:
+    0 8px 24px rgba(2, 51, 63, 0.35),
+    0 0 0 4px rgba(255, 255, 255, 0.95);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-bottom-nav__fab:not(:disabled):active .admin-bottom-nav__fab-inner {
+  transform: scale(0.94);
+}
+
+.admin-bottom-nav__fab-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.btn--submit-desktop {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .btn--submit-desktop {
+    display: none;
+  }
 }
 
 .admin-main {
@@ -388,7 +519,7 @@ select {
 @media (max-width: 600px) {
   .admin-toast-stack {
     top: auto;
-    bottom: calc(16px + var(--safe-bottom));
+    bottom: calc(108px + var(--safe-bottom));
     right: 12px;
     left: 12px;
     width: auto;
