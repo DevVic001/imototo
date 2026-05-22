@@ -68,7 +68,8 @@ export default function Home() {
   const values = useReveal();
   const process = useReveal();
   const services = useReveal();
-  const reviews = useReveal();
+  const reviews = useReveal(); 
+
 
   return (
     <div className="home-page">
