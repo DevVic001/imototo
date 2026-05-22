@@ -5,7 +5,7 @@ import { LOGO_LIGHT, SITE } from '../config';
 const initial = {
   to: '',
   customerName: '',
-  subject: 'Your Imototo cleaning quote',
+  subject: 'Your cleaning quote',
   message: '',
 };
 
