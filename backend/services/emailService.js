@@ -14,7 +14,7 @@ function getFromAddress() {
 }
 
 class EmailService {
-  async sendEmail(to, subject, html, { replyTo } = {}) {
+  async sendEmail(to, subject, html, { replyTo, attachments } = {}) {
     if (!process.env.RESEND_API_KEY) {
       return { success: false, error: 'RESEND_API_KEY is not configured' };
     }
@@ -28,6 +28,7 @@ class EmailService {
         html,
       };
       if (replyTo) payload.replyTo = replyTo;
+      if (attachments?.length) payload.attachments = attachments;
 
       const { data, error } = await resend.emails.send(payload);
 
@@ -66,19 +67,32 @@ class EmailService {
     );
   }
 
-  async sendCustomerReply({ to, subject, message, customerName }) {
+  async sendCustomerReply({ to, subject, message, customerName, attachment }) {
     const email = String(to || '').trim();
     const subjectLine = String(subject || '').trim();
     const body = String(message || '').trim();
+    const hasAttachment = Boolean(attachment?.buffer?.length);
     const html = customerReplyEmail({
       customerName: customerName?.trim() || '',
       subject: subjectLine,
       message: body,
+      hasAttachment,
+      attachmentName: attachment?.originalname || '',
     });
     const recipientEmail = process.env.RECIPIENT_EMAIL || process.env.SENDER_EMAIL;
 
+    const attachments = hasAttachment
+      ? [
+          {
+            filename: attachment.originalname || 'attachment',
+            content: attachment.buffer,
+          },
+        ]
+      : undefined;
+
     return this.sendEmail(email, subjectLine, html, {
       replyTo: recipientEmail,
+      attachments,
     });
   }
 }

@@ -294,7 +294,7 @@ function messageToHtmlBlocks(message, fontSize = '15px') {
     .join('');
 }
 
-function customerReplyEmail({ customerName, subject, message }) {
+function customerReplyEmail({ customerName, subject, message, hasAttachment, attachmentName }) {
   const greeting = customerName
     ? `Hi ${escapeHtml(customerName.trim())},`
     : 'Hello,';
@@ -311,6 +311,13 @@ function customerReplyEmail({ customerName, subject, message }) {
         </td>
       </tr>
     </table>
+    ${
+      hasAttachment
+        ? `<p style="margin:18px 0 0;font-family:${FONT_BODY};font-size:14px;line-height:1.55;color:${BRAND.muted};">
+      <strong style="color:${BRAND.primary};">Attachment:</strong> ${escapeHtml(attachmentName || 'See attached file')}
+    </p>`
+        : ''
+    }
     <p style="margin:20px 0 0;font-family:${FONT_BODY};font-size:14px;line-height:1.55;color:${BRAND.muted};">
       Thank you for choosing <strong style="color:${BRAND.primary};font-weight:600;">${escapeHtml(BRAND.name)}</strong>.
       We look forward to helping you.

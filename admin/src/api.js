@@ -51,14 +51,18 @@ export async function adminLogout() {
   }
 }
 
-export async function sendCustomerReply(payload) {
+export async function sendCustomerReply(payload, file) {
+  const form = new FormData();
+  form.append('to', payload.to);
+  form.append('subject', payload.subject);
+  form.append('message', payload.message);
+  if (payload.customerName) form.append('customerName', payload.customerName);
+  if (file) form.append('attachment', file);
+
   const res = await fetch(`${API_BASE}/api/admin/reply`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(),
-    },
-    body: JSON.stringify(payload),
+    headers: authHeaders(),
+    body: form,
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {

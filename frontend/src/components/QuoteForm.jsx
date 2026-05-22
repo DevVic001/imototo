@@ -170,6 +170,16 @@ export default function QuoteForm() {
         />
       )}
 
+    <div className="quote-form-wrap">
+      <div className="quote-inbox-alert" role="note" aria-label="Email delivery reminder">
+        <p className="quote-inbox-alert__title">Check your email for our quote reply</p>
+        <p className="quote-inbox-alert__text">
+          We reply to the address you enter below. If you do not see our email within one business day,
+          please check your <strong>Spam</strong>, <strong>Junk</strong> and <strong>Promotions</strong>{' '}
+          folders — quotes sometimes land there instead of your main inbox.
+        </p>
+      </div>
+
     <form className="quote-form-card" onSubmit={submit} noValidate>
       <h2 style={{ fontFamily: 'var(--font-display)', marginBottom: '0.5rem' }}>Get a Free Quote</h2>
       <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
@@ -321,10 +331,15 @@ export default function QuoteForm() {
         {errors.privacyConsent && <p className="form-error">{errors.privacyConsent}</p>}
       </div>
 
+      <p className="quote-inbox-reminder">
+        Tip: add <strong>{SITE.email}</strong> to your contacts so our quote reply is less likely to be filtered.
+      </p>
+
       <button type="submit" className="btn btn--primary" style={{ width: '100%', marginTop: '0.5rem' }} disabled={loading}>
         {loading ? 'Sending…' : 'Submit quote request'}
       </button>
     </form>
+    </div>
     </>
   );
 }

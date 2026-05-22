@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { adminLogout, sendCustomerReply } from '../api';
+import AdminToast from '../components/AdminToast';
 import { LOGO_LIGHT, SITE } from '../config';
+
+const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
 
 const initial = {
   to: '',
@@ -10,7 +13,9 @@ const initial = {
 };
 
 export default function ReplyForm({ onLogout }) {
+  const fileInputRef = useRef(null);
   const [form, setForm] = useState(initial);
+  const [attachment, setAttachment] = useState(null);
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +24,6 @@ export default function ReplyForm({ onLogout }) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
     if (errors[name]) setErrors((err) => ({ ...err, [name]: '' }));
-    if (toast) setToast(null);
   };
 
   const validate = () => {
@@ -34,8 +38,22 @@ export default function ReplyForm({ onLogout }) {
     if (!form.message.trim() || form.message.trim().length < 10) {
       next.message = 'Message must be at least 10 characters';
     }
+    if (attachment && attachment.size > MAX_ATTACHMENT_BYTES) {
+      next.attachment = 'File must be 5 MB or smaller';
+    }
     setErrors(next);
     return Object.keys(next).length === 0;
+  };
+
+  const onFileChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    setAttachment(file);
+    if (errors.attachment) setErrors((err) => ({ ...err, attachment: '' }));
+  };
+
+  const clearAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const submit = async (e) => {
@@ -45,16 +63,30 @@ export default function ReplyForm({ onLogout }) {
     setLoading(true);
     setToast(null);
     try {
-      await sendCustomerReply({
-        to: form.to.trim(),
-        customerName: form.customerName.trim(),
-        subject: form.subject.trim(),
-        message: form.message.trim(),
+      await sendCustomerReply(
+        {
+          to: form.to.trim(),
+          customerName: form.customerName.trim(),
+          subject: form.subject.trim(),
+          message: form.message.trim(),
+        },
+        attachment
+      );
+      setToast({
+        type: 'success',
+        title: 'Email sent',
+        message: attachment
+          ? 'Your reply and attachment were delivered to the customer.'
+          : 'Your reply was delivered to the customer.',
       });
-      setToast({ type: 'success', text: 'Email sent to customer' });
       setForm((f) => ({ ...initial, to: f.to, customerName: f.customerName }));
+      clearAttachment();
     } catch (err) {
-      setToast({ type: 'error', text: err.message || 'Could not send email' });
+      setToast({
+        type: 'error',
+        title: 'Could not send',
+        message: err.message || 'Please try again in a moment.',
+      });
     } finally {
       setLoading(false);
     }
@@ -84,9 +116,12 @@ export default function ReplyForm({ onLogout }) {
 
       <main className="admin-main">
         {toast ? (
-          <div className={`admin-toast admin-toast--${toast.type}`} role="status">
-            {toast.text}
-          </div>
+          <AdminToast
+            type={toast.type}
+            title={toast.title}
+            message={toast.message}
+            onClose={() => setToast(null)}
+          />
         ) : null}
 
         <form className="admin-card quote-form-card" onSubmit={submit}>
@@ -153,6 +188,29 @@ export default function ReplyForm({ onLogout }) {
               disabled={loading}
             />
             {errors.message ? <p className="form-error">{errors.message}</p> : null}
+          </div>
+
+          <div className={`form-group ${errors.attachment ? 'form-group--error' : ''}`}>
+            <label htmlFor="attachment">Attachment (optional)</label>
+            <input
+              ref={fileInputRef}
+              id="attachment"
+              type="file"
+              name="attachment"
+              accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,application/pdf,image/*"
+              onChange={onFileChange}
+              disabled={loading}
+            />
+            <p className="form-hint">PDF, JPG, PNG, WEBP, DOC or DOCX — max 5 MB</p>
+            {attachment ? (
+              <p className="form-file-name">
+                {attachment.name}{' '}
+                <button type="button" className="form-file-clear" onClick={clearAttachment}>
+                  Remove
+                </button>
+              </p>
+            ) : null}
+            {errors.attachment ? <p className="form-error">{errors.attachment}</p> : null}
           </div>
 
           <button type="submit" className="btn btn--primary btn--block" disabled={loading}>

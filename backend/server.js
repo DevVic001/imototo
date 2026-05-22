@@ -9,6 +9,7 @@ const {
   isValidAdminSession,
   revokeAdminSession,
 } = require('./services/adminSessions.js');
+const { adminUpload } = require('./services/adminUpload.js');
 
 dotenv.config();
 
@@ -155,7 +156,7 @@ app.post('/api/admin/logout', requireAdmin, (req, res) => {
   return res.json({ success: true });
 });
 
-app.post('/api/admin/reply', requireAdmin, async (req, res) => {
+app.post('/api/admin/reply', requireAdmin, adminUpload.single('attachment'), async (req, res) => {
   try {
     const body = trimStrings(req.body || {});
     const to = body.to;
@@ -178,6 +179,7 @@ app.post('/api/admin/reply', requireAdmin, async (req, res) => {
       subject,
       message,
       customerName,
+      attachment: req.file,
     });
 
     if (result.success) {
@@ -205,6 +207,19 @@ app.post('/api/contact', async (req, res) => {
     console.error('Contact error:', err);
     return res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+app.use((err, req, res, next) => {
+  if (err?.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ error: 'Attachment must be 5 MB or smaller' });
+  }
+  if (err?.message?.includes('File type not allowed')) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (err?.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({ error: 'Only one attachment is allowed' });
+  }
+  return next(err);
 });
 
 app.listen(PORT, () => {
