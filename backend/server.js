@@ -4,6 +4,11 @@ const https = require('https');
 const dotenv = require('dotenv');
 const emailService = require('./services/emailService.js');
 const { issueThankYouToken, consumeThankYouToken } = require('./services/thankYouTokens.js');
+const {
+  createAdminSession,
+  isValidAdminSession,
+  revokeAdminSession,
+} = require('./services/adminSessions.js');
 
 dotenv.config();
 
@@ -14,7 +19,18 @@ const allowedOrigins = [
   'https://imototo.pages.dev',
   'https://imototocleanings.co.uk',
   'https://www.imototocleanings.co.uk',
+  'http://localhost:5174',
+  'http://127.0.0.1:5174',
 ];
+
+if (process.env.ADMIN_ALLOWED_ORIGINS) {
+  for (const origin of process.env.ADMIN_ALLOWED_ORIGINS.split(',')) {
+    const trimmed = origin.trim();
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed);
+    }
+  }
+}
 
 app.use(
   cors({
@@ -89,6 +105,89 @@ app.get('/api/quote/thank-you-verify', (req, res) => {
     return res.status(403).json({ ok: false, error: 'Invalid or expired link' });
   }
   return res.json({ ok: true });
+});
+
+function getBearerToken(req) {
+  const header = req.headers.authorization;
+  if (!header || typeof header !== 'string') return '';
+  const match = header.match(/^Bearer\s+(.+)$/i);
+  return match ? match[1].trim() : '';
+}
+
+function requireAdmin(req, res, next) {
+  if (!process.env.ADMIN_PASSWORD) {
+    return res.status(503).json({ error: 'Admin is not configured on the server' });
+  }
+  const token = getBearerToken(req);
+  if (!isValidAdminSession(token)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+app.post('/api/admin/login', (req, res) => {
+  const configured = process.env.ADMIN_PASSWORD;
+  if (!configured) {
+    return res.status(503).json({ error: 'Admin is not configured on the server' });
+  }
+  const password = typeof req.body?.password === 'string' ? req.body.password : '';
+  if (!password || password !== configured) {
+    return res.status(401).json({ error: 'Invalid password' });
+  }
+  const token = createAdminSession();
+  return res.json({ success: true, token });
+});
+
+app.get('/api/admin/session', (req, res) => {
+  if (!process.env.ADMIN_PASSWORD) {
+    return res.json({ ok: false });
+  }
+  const token = getBearerToken(req);
+  return res.json({ ok: isValidAdminSession(token) });
+});
+
+app.post('/api/admin/logout', requireAdmin, (req, res) => {
+  revokeAdminSession(getBearerToken(req));
+  return res.json({ success: true });
+});
+
+app.post('/api/admin/reply', requireAdmin, async (req, res) => {
+  try {
+    const body = trimStrings(req.body || {});
+    const to = body.to;
+    const subject = body.subject;
+    const message = body.message;
+    const customerName = body.customerName || '';
+
+    if (!to || !isValidEmail(to)) {
+      return res.status(400).json({ error: 'Valid customer email is required' });
+    }
+    if (!subject || subject.length < 3 || subject.length > 200) {
+      return res.status(400).json({ error: 'Subject must be between 3 and 200 characters' });
+    }
+    if (!message || message.length < 10 || message.length > 10000) {
+      return res.status(400).json({ error: 'Message must be between 10 and 10000 characters' });
+    }
+
+    const result = await emailService.sendCustomerReply({
+      to,
+      subject,
+      message,
+      customerName,
+    });
+
+    if (result.success) {
+      return res.json({ success: true, messageId: result.messageId });
+    }
+    return res.status(500).json({ error: 'Failed to send email', details: result.error });
+  } catch (err) {
+    console.error('Admin reply error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 app.post('/api/contact', async (req, res) => {

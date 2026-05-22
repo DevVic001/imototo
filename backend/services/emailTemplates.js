@@ -255,7 +255,53 @@ function contactFormEmail({ name, email, phone, message }) {
   });
 }
 
+function messageToHtmlBlocks(message) {
+  const text = String(message ?? '').trim();
+  if (!text) return '';
+  return text
+    .split(/\n{2,}/)
+    .map((block) => {
+      const inner = escapeHtml(block).replace(/\n/g, '<br />');
+      return `<p style="margin:0 0 18px;font-size:17px;line-height:1.65;color:${BRAND.text};">${inner}</p>`;
+    })
+    .join('');
+}
+
+function customerReplyEmail({ customerName, subject, message }) {
+  const greeting = customerName
+    ? `Hi ${escapeHtml(customerName.trim())},`
+    : 'Hello,';
+  const safeSubject = String(subject || 'Your cleaning quote').trim();
+
+  const bodyHtml = `
+    <p style="margin:0 0 24px;font-size:17px;line-height:1.6;color:${BRAND.text};">
+      ${greeting}
+    </p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;">
+      <tr>
+        <td style="padding:28px 32px;background:${BRAND.secondarySoft};border-radius:10px;border-left:6px solid ${BRAND.primary};">
+          ${messageToHtmlBlocks(message)}
+        </td>
+      </tr>
+    </table>
+    <p style="margin:24px 0 0;font-size:16px;line-height:1.6;color:${BRAND.muted};">
+      Thank you for choosing <strong style="color:${BRAND.primary};">${escapeHtml(BRAND.name)}</strong>.
+      We look forward to helping you.
+    </p>`;
+
+  return layout({
+    preheader: safeSubject,
+    badge: 'Your quote',
+    title: safeSubject,
+    subtitle: 'Manchester, Bolton & surrounding areas',
+    bodyHtml,
+    footerNote:
+      'You received this email because you requested a quote on our website. Reply to this email or use WhatsApp if you have any questions.',
+  });
+}
+
 module.exports = {
   quoteRequestEmail,
   contactFormEmail,
+  customerReplyEmail,
 };

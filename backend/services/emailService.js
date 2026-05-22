@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 const { Resend } = require('resend');
-const { quoteRequestEmail, contactFormEmail } = require('./emailTemplates.js');
+const { quoteRequestEmail, contactFormEmail, customerReplyEmail } = require('./emailTemplates.js');
 
 dotenv.config();
 
@@ -64,6 +64,22 @@ class EmailService {
       html,
       { replyTo: email }
     );
+  }
+
+  async sendCustomerReply({ to, subject, message, customerName }) {
+    const email = String(to || '').trim();
+    const subjectLine = String(subject || '').trim();
+    const body = String(message || '').trim();
+    const html = customerReplyEmail({
+      customerName: customerName?.trim() || '',
+      subject: subjectLine,
+      message: body,
+    });
+    const recipientEmail = process.env.RECIPIENT_EMAIL || process.env.SENDER_EMAIL;
+
+    return this.sendEmail(email, subjectLine, html, {
+      replyTo: recipientEmail,
+    });
   }
 }
 
