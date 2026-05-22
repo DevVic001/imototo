@@ -23,6 +23,12 @@ const BRAND = {
 /** Wide layout — reads premium, not narrow/slim */
 const EMAIL_WIDTH = 640;
 
+/** Email-safe font stacks (Google Fonts + fallbacks for Outlook/Gmail) */
+const FONT_BODY = "'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif";
+const FONT_DISPLAY = "'Outfit', 'Segoe UI', Helvetica, Arial, sans-serif";
+const FONT_LINK =
+  'https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap';
+
 const QUOTE_FIELD_ORDER = [
   'firstName',
   'lastName',
@@ -65,10 +71,21 @@ function tdBg(color, extraStyle = '') {
   return `bgcolor="${color}" style="background-color:${color};${extraStyle}"`;
 }
 
-function layout({ preheader, badge, title, subtitle, bodyHtml, footerNote }) {
+function layout({ preheader, badge, title, subtitle, bodyHtml, footerNote, kind = 'staff' }) {
   const preheaderText = escapeHtml(preheader || title);
+  const isCustomer = kind === 'customer';
+  const logoWidth = isCustomer ? 200 : 280;
+  const titleSize = isCustomer ? '20px' : '26px';
+  const subtitleSize = isCustomer ? '14px' : '16px';
+  const bodySize = isCustomer ? '15px' : '16px';
+  const headerPad = isCustomer ? '24px 32px 16px' : '28px 40px 20px';
+  const heroPad = isCustomer ? '4px 32px 28px' : '8px 48px 36px';
+  const contentPad = isCustomer ? '28px 32px 32px' : '40px 48px 44px';
+  const brandNameSize = isCustomer ? '0' : '18px';
+  const showBrandLine = !isCustomer;
+
   const badgeHtml = badge
-    ? `<p style="margin:0 0 14px;display:inline-block;padding:8px 16px;background-color:#0a4a5c;border:1px solid ${BRAND.secondary};font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${BRAND.secondary};">${escapeHtml(badge)}</p>`
+    ? `<p style="margin:0 0 12px;display:inline-block;padding:6px 14px;background-color:#0a4a5c;border:1px solid ${BRAND.secondary};font-family:${FONT_DISPLAY};font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${BRAND.secondary};">${escapeHtml(badge)}</p>`
     : '';
 
   return `<!DOCTYPE html>
@@ -79,14 +96,22 @@ function layout({ preheader, badge, title, subtitle, bodyHtml, footerNote }) {
   <meta name="color-scheme" content="light" />
   <meta name="supported-color-schemes" content="light" />
   <title>${escapeHtml(title)}</title>
+  <link href="${FONT_LINK}" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    @import url('${FONT_LINK}');
+    body, table, td, p, a { font-family: ${FONT_BODY}; }
+    h1 { font-family: ${FONT_DISPLAY}; }
+  </style>
   <!--[if mso]>
   <style type="text/css">
     table { border-collapse: collapse; }
     .email-container { width: ${EMAIL_WIDTH}px !important; }
+    body, table, td, p, a { font-family: 'Segoe UI', Helvetica, Arial, sans-serif !important; }
+    h1 { font-family: 'Segoe UI', Helvetica, Arial, sans-serif !important; }
   </style>
   <![endif]-->
 </head>
-<body style="margin:0;padding:0;background:${BRAND.secondarySoft};font-family:'Segoe UI',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+<body style="margin:0;padding:0;background:${BRAND.secondarySoft};font-family:${FONT_BODY};font-size:${bodySize};line-height:1.55;color:${BRAND.text};-webkit-font-smoothing:antialiased;">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">${preheaderText}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BRAND.secondarySoft};padding:40px 20px;">
     <tr>
@@ -94,54 +119,56 @@ function layout({ preheader, badge, title, subtitle, bodyHtml, footerNote }) {
         <table role="presentation" class="email-container" width="${EMAIL_WIDTH}" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:${EMAIL_WIDTH}px;background-color:${BRAND.white};border:1px solid ${BRAND.border};">
           <!-- Brand header (solid teal — works in Outlook even if logo URL fails) -->
           <tr>
-            <td align="center" ${tdBg(BRAND.primary, 'padding:32px 40px 24px;')}>
-              <p style="margin:0 0 14px;font-size:22px;line-height:1.25;font-weight:800;color:${BRAND.white};letter-spacing:0.02em;text-align:center;">
-                ${escapeHtml(BRAND.name)}
-              </p>
+            <td align="center" ${tdBg(BRAND.primary, `padding:${headerPad};`)}>
+              ${
+                showBrandLine
+                  ? `<p style="margin:0 0 12px;font-family:${FONT_DISPLAY};font-size:${brandNameSize};line-height:1.3;font-weight:700;color:${BRAND.white};text-align:center;">${escapeHtml(BRAND.name)}</p>`
+                  : ''
+              }
               <a href="${BRAND.site}" style="text-decoration:none;">
                 <img
                   src="${BRAND.logoUrl}"
-                  width="320"
+                  width="${logoWidth}"
                   alt="${escapeHtml(BRAND.name)}"
-                  style="display:block;width:100%;max-width:320px;height:auto;margin:0 auto;border:0;border-radius:8px;"
+                  style="display:block;width:100%;max-width:${logoWidth}px;height:auto;margin:0 auto;border:0;"
                 />
               </a>
             </td>
           </tr>
           <!-- Hero -->
           <tr>
-            <td ${tdBg(BRAND.primary, 'padding:8px 48px 36px;')}>
+            <td ${tdBg(BRAND.primary, `padding:${heroPad};`)}>
               ${badgeHtml}
-              <h1 style="margin:0;font-size:28px;line-height:1.2;font-weight:800;color:${BRAND.white};letter-spacing:-0.02em;">${escapeHtml(title)}</h1>
-              ${subtitle ? `<p style="margin:14px 0 0;font-size:17px;line-height:1.45;font-weight:500;color:${BRAND.secondary};">${escapeHtml(subtitle)}</p>` : ''}
+              <h1 style="margin:0;font-family:${FONT_DISPLAY};font-size:${titleSize};line-height:1.3;font-weight:700;color:${BRAND.white};letter-spacing:-0.01em;">${escapeHtml(title)}</h1>
+              ${subtitle ? `<p style="margin:10px 0 0;font-family:${FONT_BODY};font-size:${subtitleSize};line-height:1.45;font-weight:500;color:${BRAND.secondary};">${escapeHtml(subtitle)}</p>` : ''}
             </td>
           </tr>
           <!-- Body -->
           <tr>
-            <td style="padding:40px 48px 44px;font-size:16px;line-height:1.65;color:${BRAND.text};">
+            <td style="padding:${contentPad};font-family:${FONT_BODY};font-size:${bodySize};line-height:1.6;color:${BRAND.text};">
               ${bodyHtml}
             </td>
           </tr>
           <!-- Footer -->
           <tr>
             <td ${tdBg(BRAND.secondarySoft, `padding:32px 48px 40px;border-top:1px solid ${BRAND.border};`)}>
-              <p style="margin:0 0 16px;font-size:15px;line-height:1.55;color:${BRAND.muted};font-weight:500;">
+              <p style="margin:0 0 16px;font-family:${FONT_BODY};font-size:14px;line-height:1.55;color:${BRAND.muted};font-weight:500;">
                 ${footerNote || 'Reply directly to this email to reach the customer.'}
               </p>
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px;">
                 <tr>
                   <td style="padding-right:10px;padding-bottom:10px;">
-                    <a href="${BRAND.site}/contact" style="display:inline-block;padding:14px 28px;background:${BRAND.primary};color:${BRAND.white};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;">View website</a>
+                    <a href="${BRAND.site}/contact" style="display:inline-block;padding:12px 22px;background:${BRAND.primary};color:${BRAND.white};text-decoration:none;font-family:${FONT_DISPLAY};font-size:14px;font-weight:600;border-radius:8px;">View website</a>
                   </td>
                   <td style="padding-right:10px;padding-bottom:10px;">
-                    <a href="tel:${escapeHtml(BRAND.phoneE164)}" style="display:inline-block;padding:14px 28px;background:${BRAND.white};color:${BRAND.primary};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;border:2px solid ${BRAND.primary};">${escapeHtml(BRAND.phone)}</a>
+                    <a href="tel:${escapeHtml(BRAND.phoneE164)}" style="display:inline-block;padding:12px 22px;background:${BRAND.white};color:${BRAND.primary};text-decoration:none;font-family:${FONT_DISPLAY};font-size:14px;font-weight:600;border-radius:8px;border:2px solid ${BRAND.primary};">${escapeHtml(BRAND.phone)}</a>
                   </td>
                   <td style="padding-bottom:10px;">
-                    <a href="${BRAND.whatsappUrl}" style="display:inline-block;padding:14px 28px;background:#25D366;color:${BRAND.white};text-decoration:none;font-size:15px;font-weight:700;border-radius:8px;">WhatsApp</a>
+                    <a href="${BRAND.whatsappUrl}" style="display:inline-block;padding:12px 22px;background:#25D366;color:${BRAND.white};text-decoration:none;font-family:${FONT_DISPLAY};font-size:14px;font-weight:600;border-radius:8px;">WhatsApp</a>
                   </td>
                 </tr>
               </table>
-              <p style="margin:0;font-size:14px;line-height:1.6;color:${BRAND.muted};">
+              <p style="margin:0;font-family:${FONT_BODY};font-size:13px;line-height:1.6;color:${BRAND.muted};">
                 <strong style="color:${BRAND.primary};">${escapeHtml(BRAND.name)}</strong><br />
                 <a href="${BRAND.site}" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">imototocleanings.co.uk</a>
                 &nbsp;·&nbsp; Manchester, Bolton &amp; surrounding areas<br />
@@ -255,14 +282,14 @@ function contactFormEmail({ name, email, phone, message }) {
   });
 }
 
-function messageToHtmlBlocks(message) {
+function messageToHtmlBlocks(message, fontSize = '15px') {
   const text = String(message ?? '').trim();
   if (!text) return '';
   return text
     .split(/\n{2,}/)
     .map((block) => {
       const inner = escapeHtml(block).replace(/\n/g, '<br />');
-      return `<p style="margin:0 0 18px;font-size:17px;line-height:1.65;color:${BRAND.text};">${inner}</p>`;
+      return `<p style="margin:0 0 14px;font-family:${FONT_BODY};font-size:${fontSize};line-height:1.6;color:${BRAND.text};">${inner}</p>`;
     })
     .join('');
 }
@@ -274,22 +301,23 @@ function customerReplyEmail({ customerName, subject, message }) {
   const safeSubject = String(subject || 'Your cleaning quote').trim();
 
   const bodyHtml = `
-    <p style="margin:0 0 24px;font-size:17px;line-height:1.6;color:${BRAND.text};">
+    <p style="margin:0 0 18px;font-family:${FONT_BODY};font-size:15px;line-height:1.55;color:${BRAND.text};">
       ${greeting}
     </p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;">
       <tr>
-        <td style="padding:28px 32px;background:${BRAND.secondarySoft};border-radius:10px;border-left:6px solid ${BRAND.primary};">
-          ${messageToHtmlBlocks(message)}
+        <td style="padding:22px 24px;background:${BRAND.secondarySoft};border-radius:8px;border-left:4px solid ${BRAND.primary};">
+          ${messageToHtmlBlocks(message, '15px')}
         </td>
       </tr>
     </table>
-    <p style="margin:24px 0 0;font-size:16px;line-height:1.6;color:${BRAND.muted};">
-      Thank you for choosing <strong style="color:${BRAND.primary};">${escapeHtml(BRAND.name)}</strong>.
+    <p style="margin:20px 0 0;font-family:${FONT_BODY};font-size:14px;line-height:1.55;color:${BRAND.muted};">
+      Thank you for choosing <strong style="color:${BRAND.primary};font-weight:600;">${escapeHtml(BRAND.name)}</strong>.
       We look forward to helping you.
     </p>`;
 
   return layout({
+    kind: 'customer',
     preheader: safeSubject,
     badge: 'Your quote',
     title: safeSubject,
