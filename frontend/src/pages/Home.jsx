@@ -17,7 +17,7 @@ const VALUES = [
   {
     id: 'residential',
     title: 'Homes kept spotless',
-    text: 'Regular and one-off home cleaning — kitchens, bathrooms and living spaces done properly.',
+    text: 'Regular and one-off home cleaning for kitchens, bathrooms and living spaces done properly.',
   },
   {
     id: 'tenancy',
@@ -32,7 +32,7 @@ const VALUES = [
 ];
 
 const STEPS = [
-  { title: 'Share your requirements', text: 'Quote form, call or WhatsApp — property type, size and preferred date.' },
+  { title: 'Share your requirements', text: 'Quote form, call or WhatsApp with property type, size and preferred date.' },
   { title: 'Receive a clear quote', text: 'Tailored pricing and schedule, usually within one business day.' },
   { title: 'We clean on time', text: 'Our insured team delivers a thorough, consistent finish every visit.' },
 ];
@@ -54,7 +54,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      'Small office near town — they come in Tuesday evenings. Toilets and kitchen are spot on every week. Easy to sort changes on WhatsApp.',
+      'Small office near town. They come in Tuesday evenings. Toilets and kitchen are spot on every week. Easy to sort changes on WhatsApp.',
     name: 'Amrita Shah',
     role: 'Office clean · Manchester',
     initial: 'AS',
@@ -116,7 +116,7 @@ export default function Home() {
               <p className="section__eyebrow">Services</p>
               <h2 className="section__title">What we clean</h2>
               <p className="section__lead section__lead--tight">
-                From weekly home care to post-build dust removal — one team, consistent standards.
+                From weekly home care to post-build dust removal. One team, consistent standards.
               </p>
             </div>
             <Link to="/services" className="section-head__link">
@@ -210,7 +210,7 @@ export default function Home() {
             <p className="section__eyebrow cta-premium__eyebrow">Get started</p>
             <h2>Request your free quote today</h2>
             <p>
-              {SITE.areas}. Call, WhatsApp or email — we respond quickly with clear pricing.
+              {SITE.areas}. Call, WhatsApp or email and we respond quickly with clear pricing.
             </p>
           </div>
           <div className="cta-premium__actions">

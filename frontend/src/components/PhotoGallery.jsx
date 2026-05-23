@@ -13,7 +13,7 @@ export default function PhotoGallery() {
         <p className="section__eyebrow section__eyebrow--center">Our services</p>
         <h2 className="section__title section__title--center">The spaces we clean</h2>
         <p className="section__lead section__lead--center">
-          Kitchens, bathrooms, living areas and workplaces — professional cleaning across Manchester,
+          Kitchens, bathrooms, living areas and workplaces. Professional cleaning across Manchester,
           Bolton and surrounding areas.
         </p>
         <div className="photo-gallery__grid">

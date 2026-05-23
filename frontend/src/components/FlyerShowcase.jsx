@@ -39,7 +39,7 @@ export default function FlyerShowcase() {
         <p className="section__eyebrow section__eyebrow--center">Our flyers</p>
         <h2 className="section__title section__title--center">Imototo marketing flyers</h2>
         <p className="section__lead section__lead--center">
-          The services we offer across Greater Manchester — homes, Airbnb, end of tenancy, offices
+          The services we offer across Greater Manchester: homes, Airbnb, end of tenancy, offices
           and more.
         </p>
         <div className="flyer-showcase__grid">

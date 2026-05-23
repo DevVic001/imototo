@@ -5,7 +5,7 @@ const SLIDE_COPY = [
   },
   {
     title: 'Short-let & rental turnovers',
-    subtitle: 'Timed cleans between guests or tenants — free quotes, insured team.',
+    subtitle: 'Timed cleans between guests or tenants. Free quotes, insured team.',
   },
   {
     title: 'End of tenancy & office cleaning',
@@ -21,7 +21,7 @@ const SLIDE_COPY = [
   },
   {
     title: 'Greater Manchester & Bolton',
-    subtitle: 'Homes, rentals and workplaces — one team, consistent standards.',
+    subtitle: 'Homes, rentals and workplaces. One team, consistent standards.',
   },
 ];
 
@@ -90,7 +90,7 @@ export function buildSiteImages(assets) {
 
   const gallery = galleryPool.slice(0, GALLERY_MAX).map((src) => ({
     src,
-    alt: 'Imototo cleaning — professional results',
+    alt: 'Imototo cleaning, professional results',
   }));
 
   const flyers = fliers.map((src, i) => ({

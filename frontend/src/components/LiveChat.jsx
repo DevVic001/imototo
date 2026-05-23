@@ -447,8 +447,8 @@ export default function LiveChat() {
         className="live-chat__btn"
         role="button"
         tabIndex={0}
-        aria-label={`We're listening — email ${SITE.email}. Drag to move; drag off screen to hide. Hold one second to reset its position.`}
-        title={`${SITE.email} — drag to move; hold 1s to reset spot; drag off screen to hide`}
+        aria-label={`We're listening. Email ${SITE.email}. Drag to move; drag off screen to hide. Hold one second to reset its position.`}
+        title={`${SITE.email}. Drag to move; hold 1s to reset spot; drag off screen to hide`}
         onPointerDown={onPointerDown}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -462,7 +462,7 @@ export default function LiveChat() {
           We&apos;re listening
         </span>
         <ChatAvatar />
-        <span className="live-chat__label">Email us — we&apos;re online</span>
+        <span className="live-chat__label">Email us. We&apos;re online</span>
       </div>
     </div>
   );

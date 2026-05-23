@@ -6,16 +6,16 @@ import LocalImage from '../components/LocalImage';
 import PageHero from '../components/PageHero';
 
 const ABOUT_COPY = [
-  `At Imototo Cleaning Services, we are committed to providing professional, reliable and affordable cleaning solutions across ${SITE.areas}. We specialise in residential cleaning, end of tenancy and move cleans, office and commercial cleaning, deep cleaning and short-let turnovers — delivering high quality results tailored to the needs of every client.`,
+  `At Imototo Cleaning Services, we are committed to providing professional, reliable and affordable cleaning solutions across ${SITE.areas}. We specialise in residential cleaning, end of tenancy and move cleans, office and commercial cleaning, deep cleaning and short-let turnovers, with high quality results tailored to the needs of every client.`,
   `We understand the importance of a clean and well maintained environment, whether it's a home, rental property or workplace. Our goal is to provide a service you can depend on, with attention to detail, professionalism and customer satisfaction at the heart of everything we do.`,
-  `Your space should feel good to walk into — that is exactly what we deliver. We know deadlines matter: a missed check-out clean, a tenancy handover or a busy office week. We treat every job like it matters, because to you, it does.`,
+  `Your space should feel good to walk into. That is exactly what we deliver. We know deadlines matter: a missed check-out clean, a tenancy handover or a busy office week. We treat every job like it matters, because to you, it does.`,
   `No shortcuts. No excuses. Just spotless spaces and a team you can actually rely on. Choose Imototo Cleaning Services for cleaning you can trust and results you can see.`,
 ];
 
 const MISSION_POINTS = [
   { icon: 'shield', text: 'Fully insured & professional team' },
   { icon: 'location', text: 'Manchester, Bolton & surrounding areas' },
-  { icon: 'star', text: 'Free quotes — no obligation' },
+  { icon: 'star', text: 'Free quotes with no obligation' },
 ];
 
 export default function About() {
@@ -57,7 +57,7 @@ export default function About() {
 
         <div className="container about-brand-strip">
           <img src={ASSETS.logoDark} alt={SITE.name} />
-          <p>Trusted cleaning across Greater Manchester — residential, rental and commercial.</p>
+          <p>Trusted cleaning across Greater Manchester: residential, rental and commercial.</p>
         </div>
       </section>
     </>

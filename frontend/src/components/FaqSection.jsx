@@ -10,7 +10,7 @@ export default function FaqSection() {
             Questions before you book
           </h2>
           <p className="section__lead">
-            Straight answers — no jargon. Still unsure? Call or WhatsApp and we will help.
+            Straight answers with no jargon. Still unsure? Call or WhatsApp and we will help.
           </p>
         </div>
         <div className="faq-list">

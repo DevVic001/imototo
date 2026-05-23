@@ -35,7 +35,7 @@ export default function Contact() {
             Request a <span>free quote</span>
           </>
         }
-        lead={`Tell us about your property — we respond quickly with clear pricing across ${SITE.areas}.`}
+        lead={`Tell us about your property. We respond quickly with clear pricing across ${SITE.areas}.`}
       />
 
       <section className="section section--alt">

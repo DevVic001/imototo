@@ -724,7 +724,8 @@
   margin-bottom: 0.4rem;
 }
 
-.form-required-mark {
+.form-required-mark,
+.form-group label .form-required-mark {
   color: var(--color-error);
   font-weight: 700;
 }

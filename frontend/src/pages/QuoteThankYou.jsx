@@ -106,7 +106,7 @@ export default function QuoteThankYou() {
             We&apos;ve received your <span>quote request</span>
           </>
         }
-        lead="We'll reply as soon as we can — usually within one business day — at the email you provided."
+        lead="We'll reply as soon as we can, usually within one business day, at the email you provided."
       />
 
       <section className="section section--alt">

@@ -23,9 +23,9 @@ export const SITE = {
   areas: 'Manchester, Bolton and surrounding areas',
   tagline: 'clean space, clean mind..',
   hours: {
-    weekdays: 'Mon–Fri: 8:00am – 6:00pm',
-    saturday: 'Sat: 9:00am – 4:00pm',
-    sunday: 'Sun: 10:00am – 5:00pm',
+    weekdays: 'Mon to Fri: 8:00am to 6:00pm',
+    saturday: 'Sat: 9:00am to 4:00pm',
+    sunday: 'Sun: 10:00am to 5:00pm',
   },
   social: {
     instagram: 'https://www.instagram.com/imototocleaningmanchester',
@@ -50,7 +50,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: 'Which areas do you cover?',
-    a: 'We serve Manchester, Bolton, and surrounding areas across Greater Manchester. Not sure if we cover you? Send your postcode — we will confirm quickly.',
+    a: 'We serve Manchester, Bolton, and surrounding areas across Greater Manchester. Not sure if we cover you? Send your postcode and we will confirm quickly.',
   },
   {
     q: 'Do you clean short-let rentals and end of tenancy properties?',
@@ -66,7 +66,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We will confirm payment options when we send your quote — typically bank transfer or agreed method after the job is booked.',
+    a: 'We will confirm payment options when we send your quote, typically bank transfer or an agreed method after the job is booked.',
   },
 ];
 
@@ -76,7 +76,7 @@ export const SERVICES = [
     title: 'Residential Cleaning',
     short: 'Regular and one-off home cleaning across Greater Manchester.',
     description:
-      'We keep houses, flats and family homes fresh and hygienic — from weekly upkeep to detailed one-time cleans, tailored to how you live.',
+      'We keep houses, flats and family homes fresh and hygienic, from weekly upkeep to detailed one-time cleans, tailored to how you live.',
     accent: 'blue',
   },
   {
@@ -84,7 +84,7 @@ export const SERVICES = [
     title: 'Short-Let & Airbnb Turnovers',
     short: 'Timed cleans between guests for holiday lets and short stays.',
     description:
-      'We reset your property between check-outs — kitchens, bathrooms and living areas guest-ready for the next booking, on schedule.',
+      'We reset your property between check-outs with kitchens, bathrooms and living areas guest-ready for the next booking, on schedule.',
     accent: 'peach',
   },
   {

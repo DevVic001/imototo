@@ -48,18 +48,18 @@ export default function Privacy() {
       <h2>Lawful bases (UK GDPR)</h2>
       <ul>
         <li>
-          <strong>Contract</strong> — to provide cleaning services you have booked or requested
+          <strong>Contract:</strong> to provide cleaning services you have booked or requested
         </li>
         <li>
-          <strong>Legitimate interests</strong> — to reply to enquiries and run our business safely and
+          <strong>Legitimate interests:</strong> to reply to enquiries and run our business safely and
           efficiently
         </li>
         <li>
-          <strong>Consent</strong> — where you tick a box on our forms or agree to optional marketing (if
+          <strong>Consent:</strong> where you tick a box on our forms or agree to optional marketing (if
           offered)
         </li>
         <li>
-          <strong>Legal obligation</strong> — where we must keep records for tax, insurance or law
+          <strong>Legal obligation:</strong> where we must keep records for tax, insurance or law
         </li>
       </ul>
 
@@ -77,7 +77,7 @@ export default function Privacy() {
 
       <h2>How long we keep data</h2>
       <p>
-        We keep enquiry and booking information only as long as needed for the purposes above — typically
+        We keep enquiry and booking information only as long as needed for the purposes above, typically
         while we are in contact with you and for a reasonable period afterwards for records (e.g. up to 6
         years for business records where required). We delete or anonymise data when it is no longer needed.
       </p>

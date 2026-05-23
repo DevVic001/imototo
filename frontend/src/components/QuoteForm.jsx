@@ -23,6 +23,15 @@ function parseIsoDate(value) {
   return d;
 }
 
+function RequiredStar() {
+  return (
+    <span className="form-required-mark" aria-hidden="true">
+      {' '}
+      *
+    </span>
+  );
+}
+
 const initial = {
   firstName: '',
   lastName: '',
@@ -176,7 +185,7 @@ export default function QuoteForm() {
         <p className="quote-inbox-alert__text">
           We reply to the address you enter below. If you do not see our email within one business day,
           please check your <strong>Spam</strong>, <strong>Junk</strong> and <strong>Promotions</strong>{' '}
-          folders — quotes sometimes land there instead of your main inbox.
+          folders. Quotes sometimes land there instead of your main inbox.
         </p>
       </div>
 
@@ -190,24 +199,36 @@ export default function QuoteForm() {
       <h3 className="quote-section-title">Contact details</h3>
       <div className="form-row">
         <div className={`form-group ${errors.firstName ? 'form-group--error' : ''}`}>
-          <label htmlFor="firstName">First name *</label>
+          <label htmlFor="firstName">
+            First name
+            <RequiredStar />
+          </label>
           <input id="firstName" name="firstName" value={form.firstName} onChange={set} required aria-required="true" autoComplete="given-name" />
           {errors.firstName && <p className="form-error">{errors.firstName}</p>}
         </div>
         <div className={`form-group ${errors.lastName ? 'form-group--error' : ''}`}>
-          <label htmlFor="lastName">Last name *</label>
+          <label htmlFor="lastName">
+            Last name
+            <RequiredStar />
+          </label>
           <input id="lastName" name="lastName" value={form.lastName} onChange={set} required aria-required="true" autoComplete="family-name" />
           {errors.lastName && <p className="form-error">{errors.lastName}</p>}
         </div>
       </div>
       <div className="form-row">
         <div className={`form-group ${errors.email ? 'form-group--error' : ''}`}>
-          <label htmlFor="email">Email *</label>
+          <label htmlFor="email">
+            Email
+            <RequiredStar />
+          </label>
           <input id="email" name="email" type="email" value={form.email} onChange={set} required aria-required="true" autoComplete="email" />
           {errors.email && <p className="form-error">{errors.email}</p>}
         </div>
         <div className={`form-group ${errors.phone ? 'form-group--error' : ''}`}>
-          <label htmlFor="phone">Phone *</label>
+          <label htmlFor="phone">
+            Phone
+            <RequiredStar />
+          </label>
           <input id="phone" name="phone" type="tel" value={form.phone} onChange={set} required aria-required="true" autoComplete="tel" inputMode="tel" />
           {errors.phone && <p className="form-error">{errors.phone}</p>}
         </div>
@@ -215,18 +236,27 @@ export default function QuoteForm() {
 
       <h3 className="quote-section-title">Address</h3>
       <div className={`form-group ${errors.street ? 'form-group--error' : ''}`}>
-        <label htmlFor="street">Street address *</label>
+        <label htmlFor="street">
+          Street address
+          <RequiredStar />
+        </label>
         <input id="street" name="street" value={form.street} onChange={set} required aria-required="true" autoComplete="street-address" />
         {errors.street && <p className="form-error">{errors.street}</p>}
       </div>
       <div className="form-row">
         <div className={`form-group ${errors.city ? 'form-group--error' : ''}`}>
-          <label htmlFor="city">City *</label>
+          <label htmlFor="city">
+            City
+            <RequiredStar />
+          </label>
           <input id="city" name="city" value={form.city} onChange={set} required aria-required="true" autoComplete="address-level2" />
           {errors.city && <p className="form-error">{errors.city}</p>}
         </div>
         <div className={`form-group ${errors.postcode ? 'form-group--error' : ''}`}>
-          <label htmlFor="postcode">Postcode *</label>
+          <label htmlFor="postcode">
+            Postcode
+            <RequiredStar />
+          </label>
           <input id="postcode" name="postcode" value={form.postcode} onChange={set} required aria-required="true" autoComplete="postal-code" />
           {errors.postcode && <p className="form-error">{errors.postcode}</p>}
         </div>
@@ -234,7 +264,10 @@ export default function QuoteForm() {
 
       <h3 className="quote-section-title">Service information</h3>
       <div className={`form-group ${errors.service ? 'form-group--error' : ''}`}>
-        <label htmlFor="service">Service needed *</label>
+        <label htmlFor="service">
+          Service needed
+          <RequiredStar />
+        </label>
         <select id="service" name="service" value={form.service} onChange={set} required aria-required="true">
           <option value="">Select a service</option>
           {SERVICES.map((s) => (
@@ -302,7 +335,10 @@ export default function QuoteForm() {
       </div>
 
       <div className={`form-group ${errors.message ? 'form-group--error' : ''}`}>
-        <label htmlFor="message">Additional details *</label>
+        <label htmlFor="message">
+          Additional details
+          <RequiredStar />
+        </label>
         <textarea id="message" name="message" rows={5} value={form.message} onChange={set} required aria-required="true" placeholder="Areas to clean, pets on site, access codes, etc." />
         {errors.message && <p className="form-error">{errors.message}</p>}
       </div>
