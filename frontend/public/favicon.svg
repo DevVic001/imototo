@@ -1,4 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Imototo">
   <rect width="64" height="64" rx="14" fill="#02333f"/>
-  <path d="M22 16h20v8h-6v16h6v8H22v-8h6V24h-6z" fill="#ffffff"/>
+
+  <!-- lowercase "i" body (rounded, like the logo) -->
+  <rect x="27" y="26" width="10" height="24" rx="5" fill="#ffffff"/>
+  <!-- dot above the i -->
+  <circle cx="32" cy="17" r="5" fill="#ffffff"/>
+
+  <!-- 4-point sparkle star, top-left -->
+  <path d="M12 10 L13.2 12.8 L16 14 L13.2 15.2 L12 18 L10.8 15.2 L8 14 L10.8 12.8 Z" fill="#ffffff"/>
+
+  <!-- smaller 4-point sparkle star, bottom-left -->
+  <path d="M14 45 L14.9 47.1 L17 48 L14.9 48.9 L14 51 L13.1 48.9 L11 48 L13.1 47.1 Z" fill="#ffffff"/>
 </svg>
