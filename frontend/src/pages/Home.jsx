@@ -3,7 +3,6 @@ import { useReveal } from '../hooks/useReveal';
 import { SITE, SERVICES } from '../config';
 import Hero from '../components/Hero';
 import TrustStrip from '../components/TrustStrip';
-import FlyerShowcase from '../components/FlyerShowcase';
 import FaqSection from '../components/FaqSection';
 import PhotoGallery from '../components/PhotoGallery';
 import LocalImage from '../components/LocalImage';
@@ -172,8 +171,6 @@ export default function Home() {
           </ol>
         </div>
       </section>
-
-      <FlyerShowcase />
 
       <section className="section section--white">
         <div className={`container ${reviews.className}`} ref={reviews.ref}>
