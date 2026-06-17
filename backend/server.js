@@ -233,5 +233,5 @@ app.listen(PORT, () => {
   const keepAliveUrl = 'https://imototo.onrender.com';
   setInterval(() => {
     https.get(keepAliveUrl, (res) => res.resume()).on('error', () => {});
-  }, 5 * 60 * 1000);
+  }, 10 * 60 * 1000);
 });
