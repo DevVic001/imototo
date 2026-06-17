@@ -9,7 +9,7 @@ const {
   isValidAdminSession,
   revokeAdminSession,
 } = require('./services/adminSessions.js');
-const { adminUpload } = require('./services/adminUpload.js');
+const { adminUpload, MAX_BYTES: ADMIN_MAX_BYTES } = require('./services/adminUpload.js');
 
 dotenv.config();
 
@@ -212,7 +212,8 @@ app.post('/api/contact', async (req, res) => {
 
 app.use((err, req, res, next) => {
   if (err?.code === 'LIMIT_FILE_SIZE') {
-    return res.status(400).json({ error: 'Attachment must be 5 MB or smaller' });
+    const maxMb = Math.round(ADMIN_MAX_BYTES / (1024 * 1024));
+    return res.status(400).json({ error: `Attachment must be ${maxMb} MB or smaller` });
   }
   if (err?.message?.includes('File type not allowed')) {
     return res.status(400).json({ error: err.message });
@@ -229,7 +230,7 @@ app.listen(PORT, () => {
     console.warn('ADMIN_PASSWORD is not set — admin login will return 503');
   }
 
-  const keepAliveUrl = 'https://imototo-sc43.onrender.com';
+  const keepAliveUrl = 'https://imototo.onrender.com';
   setInterval(() => {
     https.get(keepAliveUrl, (res) => res.resume()).on('error', () => {});
   }, 5 * 60 * 1000);

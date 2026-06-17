@@ -4,7 +4,7 @@ import AdminBottomNav from '../components/AdminBottomNav';
 import AdminToast from '../components/AdminToast';
 import { LOGO_LIGHT, SITE } from '../config';
 
-const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
+const MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024;
 
 const initial = {
   to: '',
@@ -42,7 +42,7 @@ export default function ReplyForm({ onLogout }) {
       next.message = 'Message must be at least 10 characters';
     }
     if (attachment && attachment.size > MAX_ATTACHMENT_BYTES) {
-      next.attachment = 'File must be 5 MB or smaller';
+      next.attachment = 'File must be 15 MB or smaller';
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -212,7 +212,7 @@ export default function ReplyForm({ onLogout }) {
               onChange={onFileChange}
               disabled={loading}
             />
-            <p className="form-hint">PDF, JPG, PNG, WEBP, DOC or DOCX — max 5 MB</p>
+            <p className="form-hint">PDF, JPG, PNG, WEBP, DOC or DOCX — max 15 MB</p>
             {attachment ? (
               <p className="form-file-name">
                 {attachment.name}{' '}

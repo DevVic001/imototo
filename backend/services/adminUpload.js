@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 15 * 1024 * 1024;
 
 const ALLOWED_MIME = new Set([
   'application/pdf',
@@ -26,3 +26,4 @@ const adminUpload = multer({
 });
 
 module.exports = { adminUpload, MAX_BYTES };
+
