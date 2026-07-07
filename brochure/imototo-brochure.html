@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Imototo Cleaning Services — Brochure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #02333f;
+        --primary-dark: #011a21;
+        --sage: #d0d5cd;
+        --soft: #eef0ec;
+        --peach: #f3e0d4;
+        --blue: #e3edf2;
+        --white: #ffffff;
+        --text: #3a4f56;
+        --heading: #02333f;
+        --muted: #5c7179;
+        --font-display: 'Outfit', system-ui, sans-serif;
+        --font-body: 'Source Sans 3', system-ui, sans-serif;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html, body {
+        background: #5c6b70;
+        font-family: var(--font-body);
+        color: var(--text);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* A4 page */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 12px auto;
+        background: var(--white);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      /* ——— Header ——— */
+      .header {
+        background: var(--primary);
+        color: var(--white);
+        padding: 22px 30px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .header__logo {
+        height: 58px;
+        width: auto;
+        display: block;
+      }
+
+      /* Wordmark fallback if image is swapped out */
+      .wordmark { font-family: var(--font-display); line-height: 1; }
+      .wordmark__name {
+        font-size: 38px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--white);
+      }
+      .wordmark__sub {
+        margin-top: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.42em;
+        color: var(--sage);
+        text-transform: uppercase;
+      }
+
+      .badge {
+        flex-shrink: 0;
+        border: 2px solid var(--sage);
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        background: var(--primary-dark);
+      }
+      .badge__check {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--sage);
+      }
+      .badge__title {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--white);
+        text-transform: uppercase;
+      }
+      .badge__note {
+        font-size: 7.5px;
+        letter-spacing: 0.16em;
+        color: var(--sage);
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+
+      /* ——— Ribbon ——— */
+      .ribbon {
+        background: var(--primary-dark);
+        color: var(--white);
+        font-family: var(--font-display);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        padding: 9px 30px;
+      }
+
+      /* ——— Body ——— */
+      .body {
+        flex: 1;
+        padding: 22px 30px 8px;
+        display: grid;
+        grid-template-columns: 1.18fr 1fr;
+        gap: 26px;
+      }
+
+      .section { margin-bottom: 18px; }
+
+      .section__head {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 9px;
+      }
+      .section__dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: var(--white);
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .section__title {
+        font-family: var(--font-display);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--heading);
+      }
+
+      .lead {
+        font-size: 11px;
+        line-height: 1.55;
+        color: var(--text);
+        margin-bottom: 9px;
+      }
+      .lead:last-child { margin-bottom: 0; }
+
+      /* Check lists */
+      .list { list-style: none; }
+      .list--two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px 14px;
+      }
+      .list--one { display: grid; gap: 6px; }
+      .list li {
+        position: relative;
+        padding-left: 19px;
+        font-size: 10.5px;
+        line-height: 1.45;
+        color: var(--text);
+      }
+      .list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: var(--white);
+        font-size: 8px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+      .list--plain li::before {
+        content: '';
+        width: 5px;
+        height: 5px;
+        top: 5px;
+        left: 3px;
+        background: var(--primary);
+      }
+
+      /* ——— Areas band ——— */
+      .areas {
+        margin: 2px 30px 0;
+        background: var(--soft);
+        border: 1px solid var(--sage);
+        border-radius: 10px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .areas__label {
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--heading);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .areas__list {
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      /* ——— Gallery ——— */
+      .gallery { padding: 16px 30px 4px; }
+      .gallery__title {
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 9px;
+      }
+      .gallery__row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 9px;
+      }
+      .shot {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--sage);
+        aspect-ratio: 1 / 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .shot__half {
+        position: relative;
+        background: var(--soft);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      .shot__half--after { background: var(--blue); }
+      .shot__tag {
+        font-family: var(--font-display);
+        font-size: 7px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--primary);
+        background: rgba(255, 255, 255, 0.85);
+        padding: 2px 5px;
+        margin-bottom: 6px;
+        border-radius: 3px;
+      }
+      .shot__half img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* ——— Footer ——— */
+      .footer {
+        margin-top: auto;
+        background: var(--primary);
+        color: var(--white);
+        padding: 18px 30px;
+        display: grid;
+        grid-template-columns: 1.25fr 1fr 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+      .footer__col h4 {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--sage);
+        margin-bottom: 7px;
+      }
+      .footer__line {
+        font-size: 11px;
+        line-height: 1.7;
+        color: var(--white);
+      }
+      .footer__name {
+        font-family: var(--font-display);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--white);
+      }
+      .footer__role {
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--sage);
+        margin-top: 2px;
+      }
+      .footer__tag {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 700;
+        font-style: italic;
+        line-height: 1.35;
+        color: var(--white);
+        text-align: right;
+      }
+      .footer__tag span { color: var(--sage); }
+
+      .strip {
+        background: var(--primary-dark);
+        color: var(--sage);
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 9.5px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        padding: 7px;
+      }
+
+      /* ——— Screen-only helper bar ——— */
+      .toolbar {
+        max-width: 210mm;
+        margin: 16px auto 0;
+        font-family: var(--font-body);
+        color: #fff;
+        text-align: center;
+        font-size: 13px;
+        opacity: 0.85;
+      }
+      @media print {
+        html, body { background: #fff; }
+        .toolbar { display: none; }
+        .page { margin: 0; box-shadow: none; }
+        @page { size: A4; margin: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">Press Ctrl/Cmd + P → Save as PDF (A4, margins: None, Background graphics: ON)</div>
+
+    <div class="page">
+      <!-- Header -->
+      <header class="header">
+        <img
+          class="header__logo"
+          src="https://imototocleanings.co.uk/assets/images/logo-dark.jpg"
+          alt="Imototo Cleaning Services"
+          onerror="this.style.display='none';document.getElementById('wm').style.display='block';"
+        />
+        <div id="wm" class="wordmark" style="display:none;">
+          <div class="wordmark__name">imototo</div>
+          <div class="wordmark__sub">Cleaning Services</div>
+        </div>
+
+        <div class="badge">
+          <div class="badge__check">✓</div>
+          <div class="badge__title">Fully Insured</div>
+          <div class="badge__note">For your peace of mind</div>
+        </div>
+      </header>
+
+      <!-- Ribbon -->
+      <div class="ribbon">Professional Property Cleaning Services</div>
+
+      <!-- Body -->
+      <main class="body">
+        <!-- Left column -->
+        <div class="col">
+          <div class="section">
+            <div class="section__head">
+              <span class="section__dot">i</span>
+              <span class="section__title">About Us</span>
+            </div>
+            <p class="lead">
+              Imototo Cleaning Services is a Bolton based cleaning company providing professional
+              cleaning services for letting agents, landlords, property managers, Airbnb hosts and
+              homeowners across Greater Manchester and surrounding areas.
+            </p>
+            <p class="lead">
+              We understand the importance of preparing properties quickly and to a high standard.
+              Our team delivers reliable, thorough cleaning that helps ensure properties are
+              presented in the best possible condition for new tenants, viewings, inspections and
+              guest arrivals.
+            </p>
+            <p class="lead">
+              Fully insured and committed to excellence, we pride ourselves on professionalism,
+              attention to detail and dependable service.
+            </p>
+          </div>
+
+          <div class="section">
+            <div class="section__head">
+              <span class="section__dot">✦</span>
+              <span class="section__title">Services We Provide</span>
+            </div>
+            <ul class="list list--two">
+              <li>End of Tenancy Cleaning</li>
+              <li>Internal Window Cleaning</li>
+              <li>Deep Cleaning</li>
+              <li>Oven Cleaning</li>
+              <li>Move-In / Move-Out Cleaning</li>
+              <li>Post-Renovation Cleaning</li>
+              <li>Airbnb &amp; Short-Let Turnovers</li>
+              <li>Regular Domestic Cleaning</li>
+              <li>Property Refresh Cleaning</li>
+              <li>Commercial &amp; One-Off Cleans</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="col">
+          <div class="section">
+            <div class="section__head">
+              <span class="section__dot">★</span>
+              <span class="section__title">Why Work With Us?</span>
+            </div>
+            <ul class="list list--one">
+              <li>Fully Insured</li>
+              <li>Reliable and Professional</li>
+              <li>Flexible Scheduling</li>
+              <li>Competitive Fixed Pricing</li>
+              <li>Short-Notice Availability</li>
+              <li>Attention to Detail</li>
+              <li>Fast Property Turnarounds</li>
+              <li>Friendly and Responsive Communication</li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <div class="section__head">
+              <span class="section__dot">▣</span>
+              <span class="section__title">We Work With</span>
+            </div>
+            <ul class="list list--one list--plain">
+              <li>Letting Agents</li>
+              <li>Estate Agents</li>
+              <li>Landlords</li>
+              <li>Property Management Companies</li>
+              <li>Airbnb &amp; Serviced Accommodation Hosts</li>
+              <li>Homeowners</li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <div class="section__head">
+              <span class="section__dot">✓</span>
+              <span class="section__title">Our Commitment</span>
+            </div>
+            <p class="lead">
+              Our aim is simple: to provide a dependable cleaning service that helps property
+              professionals save time, maintain standards and prepare properties for their next
+              occupants with confidence.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <!-- Areas covered -->
+      <div class="areas">
+        <span class="areas__label"><span class="section__dot">◎</span> Areas Covered</span>
+        <span class="areas__list">
+          Bolton · Manchester · Bury · Wigan · Preston · Blackburn · Stockport · Salford &amp;
+          surrounding areas
+        </span>
+      </div>
+
+      <!-- Gallery (replace placeholders with real before/after photos) -->
+      <div class="gallery">
+        <div class="gallery__title">Attention to Detail · Spotless Results</div>
+        <div class="gallery__row">
+          <div class="shot">
+            <div class="shot__half"><span class="shot__tag">Before</span></div>
+            <div class="shot__half shot__half--after"><span class="shot__tag">After</span></div>
+          </div>
+          <div class="shot">
+            <div class="shot__half"><span class="shot__tag">Before</span></div>
+            <div class="shot__half shot__half--after"><span class="shot__tag">After</span></div>
+          </div>
+          <div class="shot">
+            <div class="shot__half"><span class="shot__tag">Before</span></div>
+            <div class="shot__half shot__half--after"><span class="shot__tag">After</span></div>
+          </div>
+          <div class="shot">
+            <div class="shot__half"><span class="shot__tag">Before</span></div>
+            <div class="shot__half shot__half--after"><span class="shot__tag">After</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer__col">
+          <h4>Get In Touch</h4>
+          <div class="footer__line">
+            Phone: 07823 893420<br />
+            Email: imototocleanings@gmail.com<br />
+            Web: imototocleanings.co.uk
+          </div>
+        </div>
+        <div class="footer__col">
+          <div class="footer__name">Grace Adelabu</div>
+          <div class="footer__role">Director</div>
+          <div class="footer__line" style="margin-top:4px;">Imototo Cleaning Services</div>
+        </div>
+        <div class="footer__col">
+          <div class="footer__tag">Professional.<br /><span>Reliable.</span><br />Spotless Results.</div>
+        </div>
+      </footer>
+
+      <div class="strip">Reliable Cleaning · Happy Clients · Ready-To-Let Properties</div>
+    </div>
+  </body>
+</html>
