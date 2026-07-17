@@ -230,7 +230,7 @@ app.listen(PORT, () => {
     console.warn('ADMIN_PASSWORD is not set — admin login will return 503');
   }
 
-  const keepAliveUrl = 'https://imototo.onrender.com';
+  const keepAliveUrl = 'https://imototo-4dxq.onrender.com';
   setInterval(() => {
     https.get(keepAliveUrl, (res) => res.resume()).on('error', () => {});
   }, 10 * 60 * 1000);
